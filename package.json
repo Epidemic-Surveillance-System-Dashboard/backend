@@ -1,0 +1,18 @@
+{
+  "name": "backend-api",
+  "version": "1.0.0",
+  "description": "NodeJS Backend API for ESSD",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "ESSD",
+  "license": "ISC",
+  "dependencies": {
+    "@types/node": "^10.12.18",
+    "express": "^4.16.4",
+    "gulp": "^4.0.0",
+    "gulp-typescript": "^5.0.0",
+    "typescript": "^3.2.2"
+  }
+}
