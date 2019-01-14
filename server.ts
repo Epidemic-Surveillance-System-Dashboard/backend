@@ -1,13 +1,13 @@
-import * as http from 'http';
-import app from './app';
-const port = 3000;
-app.set('port', port);
-//create a server and pass our Express app to it.
-const server = http.createServer(app);
-server.listen(port);
-server.on('listening', onListening);
+import * as express from 'express';
 
-//function to note that Express is listening
-function onListening(): void {
-    console.log(`Listening on port ` + port);
-}
+import { TestRoutes } from './src/controllers/testRoute';
+
+const app: express.Application = express();
+const port = process.env.PORT || 3000;
+
+//mount routes here
+app.use('/', TestRoutes);
+
+app.listen(port, () => {
+    console.log(`listening at localhost:${port}`);
+});
