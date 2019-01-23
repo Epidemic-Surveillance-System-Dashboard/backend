@@ -1,0 +1,17 @@
+{
+    "uploaderConfig": {
+        "authentication": {
+            "type": "default",
+            "options": {
+                "userName": "essdsqldev",
+                "password": "Whyessdwhy!"
+            }
+        },
+        "server": "essd-sql-dev.database.windows.net",
+        "options":
+        {
+            "database": "essd-sql-dev",
+            "encrypt": true
+        }
+    }
+}
