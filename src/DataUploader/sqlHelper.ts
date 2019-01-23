@@ -1,27 +1,11 @@
 import * as tedious from 'tedious';
+import * as config from 'config';
 
-const config =
-{
-    authentication: {
-        type: "default",
-        options : {
-            userName: 'essdsqldev',
-            password: 'Whyessdwhy!'
-        }
-    },
-    server: 'essd-sql-dev.database.windows.net',
-    options:
-    {
-        database: '',
-        encrypt: true
-    }
-};
 class SqlHelper {
 
     connection: any;
 
-    constructor(db: string){
-        config.options.database = db;
+    constructor(config: any){
         this.connection = new tedious.Connection(config);
     }
 
@@ -55,5 +39,6 @@ class SqlHelper {
     }
 }
 
-var sh = new SqlHelper('essd-sql-dev');
-sh.query(["INSERT INTO TEST (ID, NAME) VALUES (6, '6')"]);
+var uploaderConfig = config.get('uploaderConfig');
+var sh = new SqlHelper(uploaderConfig);
+sh.query(["SELECT * FROM TEST"]);
