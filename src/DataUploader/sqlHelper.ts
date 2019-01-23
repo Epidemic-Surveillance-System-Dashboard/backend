@@ -1,7 +1,7 @@
 import * as tedious from 'tedious';
 import * as config from 'config';
 
-class SqlHelper {
+export class SqlHelper {
 
     connection: any;
 
@@ -25,6 +25,8 @@ class SqlHelper {
             var request = new tedious.Request (
                 query,
                 (err, rowCount, rows) => {
+                    if (err) 
+                        console.log("SQL Error number: " + err.number);
                     console.log(rowCount + ' row(s) returned');
                     this.connection.close();
                     process.exit();
@@ -39,6 +41,6 @@ class SqlHelper {
     }
 }
 
-var uploaderConfig = config.get('uploaderConfig');
-var sh = new SqlHelper(uploaderConfig);
-sh.query(["SELECT * FROM TEST"]);
+// var uploaderConfig = config.get('uploaderConfig');
+// var sh = new SqlHelper(uploaderConfig);
+// sh.query(["INSERT INTO GROUPS (GroupName) VALUES ('aaaa')"]);
