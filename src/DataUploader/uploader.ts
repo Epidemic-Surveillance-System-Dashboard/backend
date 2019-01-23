@@ -12,4 +12,4 @@ class DataUploader {
 
 const du = new DataUploader();
 
-du.parse('DataUploader\\a.xls');
+du.parse('src\\DataUploader\\a.xls');
