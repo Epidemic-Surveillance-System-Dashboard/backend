@@ -38,10 +38,7 @@ class SqlHelper {
         });
     }
 }
-<<<<<<< HEAD:DataUploader/sqlHelper.ts
-=======
 
 var uploaderConfig = config.get('uploaderConfig');
 var sh = new SqlHelper(uploaderConfig);
 sh.query(["SELECT * FROM TEST"]);
->>>>>>> 552f48b5764d139d51f218a9a6794726e9d71a97:src/DataUploader/sqlHelper.ts
