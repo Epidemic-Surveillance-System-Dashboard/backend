@@ -54,6 +54,3 @@ class SqlHelper {
         });
     }
 }
-
-var sh = new SqlHelper('essd-sql-dev');
-sh.query(["INSERT INTO TEST (ID, NAME) VALUES (6, '6')"]);
