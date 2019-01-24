@@ -1,58 +1,79 @@
 import * as tedious from 'tedious';
 import * as tediousPool from 'tedious-connection-pool';
-import * as config from 'config';
 
 export class SqlHelper {
 
-   // connection: any;
     pool: any;
 
     constructor(dbConfig: any, poolConfig: any){
-       // this.connection = new tedious.Connection(config);
         this.pool = new tediousPool(poolConfig, dbConfig);
-
         this.pool.on('error', function(err){
             console.log("error: " + err);
         });
     }
 
-    query(queries: string[]){
-       // this.connection.on('connect', (err) => {
-         //   if(err){
-         //       console.log(err);
-         //   }
-         //   else{
-                this.launchQueries(queries);
-         //   }
-       // });
+    launchQueriesInSync(queries: string[], params?: any[]){
+
+        this.pool.acquire((err, connection) => {
+            if(err){
+                console.log("error after acquiring connection: " + err);
+                return;
+            }
+            var combinedQuery: string = "";       
+            queries.forEach((oneQuery) => {
+                combinedQuery += oneQuery;
+            });
+    
+            var request = new tedious.Request (combinedQuery, (err, rowCount, rows) => {
+                if (err){
+                    console.log("SQL Error number: " + err);
+                }
+                console.log(rowCount + ' row(s) returned'); 
+                connection.release(); 
+    
+            }).on('row', function(columns) {
+                columns.forEach(function(column) {
+                    console.log("%s\t%s", column.metadata.colName, column.value);
+                });
+            });
+
+            if(params){
+                for(var i = 0; i < params.length; i++){
+                    request.addParameter(params[i].param, params[i].type, params[i].value);
+                }
+            }
+            connection.execSql(request);
+        });
     }
 
-    launchQueries(queries: string[]){
-        queries.forEach((query) => { 
+    launchQueryAsync(query, params?: any[]){
 
-            this.pool.acquire((err,connection) => {
-                if(err)
-                    console.log("error after acquiring connection: " + err);
-
-                    var request = new tedious.Request (query,(err, rowCount, rows) => {
-                        if (err) 
-                            console.log("SQL Error number: " + err);//.number);
-                        console.log(rowCount + ' row(s) returned'); 
-                        connection.release(); 
-
-                    }).on('row', function(columns) {
-                        columns.forEach(function(column) {
-                            console.log("%s\t%s", column.metadata.colName, column.value);
-                        });
-                    });
-
-                    connection.execSql(request);
-            });
-        });
+        this.pool.acquire((err, connection) => {
+            if(err){
+                console.log("error after acquiring connection: " + err);
+                return;
+            }
+            var request = new tedious.Request (query, (err, rowCount, rows) => {
+                if (err){
+                    console.log("SQL Error number: " + err);
+                }
+                console.log(rowCount + ' row(s) returned'); 
+                connection.release(); 
         
-       // process.exit();
+            }).on('row', function(columns) {
+                columns.forEach(function(column) {
+                    console.log("%s\t%s", column.metadata.colName, column.value);
+                });
+            });
+            if(params){
+                for(var i = 0; i < params.length; i++){
+                    request.addParameter(params[i].param, params[i].type, params[i].value);
+                }
+            }
+            connection.execSql(request);
+        });
     }
 }
 
- //var sh = new SqlHelper(config.get('uploaderConfig'), config.get('sqlConnectionPoolConfig'));
- //sh.query(["SELECT * FROM Groups"]);
+// var sh = new SqlHelper(config.get('tediousPoolConfig'), config.get('sqlConnectionPoolConfig'));
+ //sh.launchQueriesInSync(["SELECT * FROM State;", "SELECT * FROM Ward;", "SELECT * FROM LGA;", "SELECT * FROM Facility;"]);
