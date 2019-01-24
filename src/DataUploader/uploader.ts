@@ -8,14 +8,14 @@ class DataUploader {
     workbook : xlsx.WorkBook;
     sqlHelper: SqlHelper;
 
-    constructor(filePath: string) {
-        this.workbook = xlsx.readFile(filePath);
+    constructor() {
         this.sqlHelper = new SqlHelper(config.get('tediousPoolConfig'), config.get('sqlConnectionPoolConfig'));
     }
 
-    UploadXlsxFile(){ 
+    UploadXlsxFile(filePath: string){ 
+        this.workbook = xlsx.readFile(filePath);
         var sheetNameList: string[] = this.workbook.SheetNames;
-       // this.uploadLocation("state1", "lga1", "ward1", "facility1");        
+        this.uploadLocation("state1", "lga1", "ward1", "facility1");        
         sheetNameList.forEach((sheetName) => { 
             switch(sheetName) {
                 case 'Facility Attendance - A Age(Att': {
@@ -68,10 +68,10 @@ class DataUploader {
             if(header != '' && value != '') {
                 if (header.includes('Female')) {
                     queries.push("INSERT INTO Metrics (MetricName, SetId) VALUES ('Facility Attendance @header', " + 
-                        "(SELECT Id FROM Sets WHERE SetName = 'Facility Attendance Female'))");
+                        "(SELECT Id FROM Sets WHERE SetName = 'Facility Attendance Female'));");
                 } else {
                     queries.push("INSERT INTO Metrics (MetricName, SetId) VALUES ('Facility Attendance @header', " + 
-                        "(SELECT Id FROM Sets WHERE SetName = 'Facility Attendance Male'))");
+                        "(SELECT Id FROM Sets WHERE SetName = 'Facility Attendance Male'));");
                 }                
                 params.push({param: "header", type: TYPES.NVarChar, value: header});
             }   
@@ -83,8 +83,8 @@ class DataUploader {
     }
 }
 
-const dataUploader = new DataUploader("src/DataUploader/data.xls");
-dataUploader.UploadXlsxFile();
+const dataUploader = new DataUploader();
+dataUploader.UploadXlsxFile("src/DataUploader/data.xls");
 
 
 //console.log(workbook.Sheets[sheetNameList[0]]['B6']);

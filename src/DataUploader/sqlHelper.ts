@@ -31,7 +31,8 @@ export class SqlHelper {
                 console.log(rowCount + ' row(s) returned'); 
                 connection.release(); 
     
-            }).on('row', function(columns) {
+            })
+            .on('row', function(columns) {
                 columns.forEach(function(column) {
                     console.log("%s\t%s", column.metadata.colName, column.value);
                 });
@@ -46,7 +47,7 @@ export class SqlHelper {
         });
     }
 
-    launchQueryAsync(query, params?: any[]){
+    launchQuery(query, params?: any[]){
 
         this.pool.acquire((err, connection) => {
             if(err){
@@ -60,7 +61,8 @@ export class SqlHelper {
                 console.log(rowCount + ' row(s) returned'); 
                 connection.release(); 
         
-            }).on('row', function(columns) {
+            })
+            .on('row', function(columns) {
                 columns.forEach(function(column) {
                     console.log("%s\t%s", column.metadata.colName, column.value);
                 });
