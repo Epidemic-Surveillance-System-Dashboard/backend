@@ -15,16 +15,29 @@ class DataUploader {
 
     parse(){ 
         var sheetNameList: string[] = this.workbook.SheetNames;
+        this.addLocation("state", "lga", "ward", "facility");        
         sheetNameList.forEach((sheetName) => { 
             switch(sheetName) {
                 case 'Facility Attendance - A Age(Att': {
-                    this.parseFacilityAttendance(sheetName);
+                    //this.parseFacilityAttendance(sheetName);
                     break;
                 }
             }
         });
     }
     
+    addLocation(state: string, lga: string, ward: string, facility: string) {
+        var stateQuery = "INSERT INTO State (Name) VALUES ('"+ state+"');";
+        var lgaQuery = "INSERT INTO LGA (Name, StateId) VALUES ('"+ lga +"', (SELECT Id FROM State WHERE Name = '" + state + "'));";
+        var wardQuery = "INSERT INTO Ward (Name, LGAId) VALUES ('"+ ward +"', (SELECT Id FROM LGA WHERE Name = '" + lga + "'));";
+        var facilityQuery = "INSERT INTO Facility (Name, WardId) VALUES ('"+ facility +"', (SELECT Id FROM Ward WHERE Name = '" + ward + "'));";
+        var facilityViewQuery = "INSERT INTO FacilityView (FacilityId, WardId, LGAId, StateId) VALUES ((SELECT Id FROM Facility WHERE Name = '" + facility + "'), " +
+            "(SELECT Id FROM Ward WHERE Name = '" + ward + "'), " +
+            "(SELECT Id FROM LGA WHERE Name = '" + lga + "'), " +
+            "(SELECT Id FROM State WHERE Name = '" + state + "'));";
+        this.sh.query([stateQuery+lgaQuery+wardQuery+facilityQuery+facilityViewQuery]);
+    }
+
     parseFacilityAttendance(sheetName: string) {
         console.log("here1");
         var queries = [];
@@ -50,6 +63,8 @@ class DataUploader {
                     metricQuery = "INSERT INTO Metrics (MetricName, SetId) VALUES ('"+ 'Facility Attendance ' + header +"', (SELECT Id FROM Sets WHERE SetName = 'Facility Attendance Male'))";
                 }                
                 queries.push(metricQuery);
+                queries = [];
+
             }            
         }
         this.sh.query(queries);

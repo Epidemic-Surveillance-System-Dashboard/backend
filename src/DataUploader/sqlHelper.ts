@@ -28,7 +28,6 @@ export class SqlHelper {
     }
 
     launchQueries(queries: string[]){
-        console.log("here");
         queries.forEach((query) => { 
 
             this.pool.acquire((err,connection) => {
