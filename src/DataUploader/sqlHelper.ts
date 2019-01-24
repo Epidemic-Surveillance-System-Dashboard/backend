@@ -1,46 +1,59 @@
 import * as tedious from 'tedious';
+import * as tediousPool from 'tedious-connection-pool';
 import * as config from 'config';
 
 export class SqlHelper {
 
-    connection: any;
+   // connection: any;
+    pool: any;
 
-    constructor(config: any){
-        this.connection = new tedious.Connection(config);
+    constructor(dbConfig: any, poolConfig: any){
+       // this.connection = new tedious.Connection(config);
+        this.pool = new tediousPool(poolConfig, dbConfig);
+
+        this.pool.on('error', function(err){
+            console.log("error: " + err);
+        });
     }
 
     query(queries: string[]){
-        this.connection.on('connect', (err) => {
-            if(err){
-                console.log(err);
-            }
-            else{
+       // this.connection.on('connect', (err) => {
+         //   if(err){
+         //       console.log(err);
+         //   }
+         //   else{
                 this.launchQueries(queries);
-            }
-        });
+         //   }
+       // });
     }
 
     launchQueries(queries: string[]){
+        console.log("here");
         queries.forEach((query) => { 
-            var request = new tedious.Request (
-                query,
-                (err, rowCount, rows) => {
-                    if (err) 
-                        console.log("SQL Error number: " + err.number);
-                    console.log(rowCount + ' row(s) returned');
-                    this.connection.close();
-                    process.exit();
-                } 
-            ).on('row', function(columns) {
-                columns.forEach(function(column) {
-                    console.log("%s\t%s", column.metadata.colName, column.value);
-                });
-            });        
-            this.connection.execSql(request);
+
+            this.pool.acquire((err,connection) => {
+                if(err)
+                    console.log("error after acquiring connection: " + err);
+
+                    var request = new tedious.Request (query,(err, rowCount, rows) => {
+                        if (err) 
+                            console.log("SQL Error number: " + err);//.number);
+                        console.log(rowCount + ' row(s) returned'); 
+                        connection.release(); 
+
+                    }).on('row', function(columns) {
+                        columns.forEach(function(column) {
+                            console.log("%s\t%s", column.metadata.colName, column.value);
+                        });
+                    });
+
+                    connection.execSql(request);
+            });
         });
+        
+       // process.exit();
     }
 }
 
-// var uploaderConfig = config.get('uploaderConfig');
-// var sh = new SqlHelper(uploaderConfig);
-// sh.query(["INSERT INTO GROUPS (GroupName) VALUES ('aaaa')"]);
+ //var sh = new SqlHelper(config.get('uploaderConfig'), config.get('sqlConnectionPoolConfig'));
+ //sh.query(["SELECT * FROM Groups"]);

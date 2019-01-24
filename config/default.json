@@ -1,17 +1,19 @@
 {
-    "uploaderConfig": {
-        "authentication": {
-            "type": "default",
-            "options": {
-                "userName": "essdsqldev",
-                "password": "Whyessdwhy!"
-            }
-        },
+    "tediousPoolConfig": {
+        "userName": "essdsqldev",
+        "password": "Whyessdwhy!",
         "server": "essd-sql-dev.database.windows.net",
         "options":
         {
             "database": "essd-sql-dev",
             "encrypt": true
         }
+    },
+    "sqlConnectionPoolConfig": {
+        "min": 1,
+        "max": 15,
+        "log": false,
+        "acquiredTimeout": 30000
     }
+
 }
