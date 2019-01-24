@@ -8,6 +8,7 @@ class DataUploader {
     workbook : xlsx.WorkBook;
     sqlHelper: SqlHelper;
     locationId: number;
+    sheetDate: any;    
 
     constructor() {
         this.sqlHelper = new SqlHelper(config.get('tediousPoolConfig'), config.get('sqlConnectionPoolConfig'));
@@ -17,8 +18,14 @@ class DataUploader {
     uploadXlsxFile(filePath: string){ 
         this.workbook = xlsx.readFile(filePath);
         var sheetNameList: string[] = this.workbook.SheetNames;
+
+        var extractedDate = this.workbook.Sheets[sheetNameList[0]]['A3'].v.split(" ").splice(-2);
+        /**************TEMPORARY DATE FOR TESTING, REMOVE LATER**************/
+        extractedDate = "December,2016";
+        this.sheetDate = new Date(extractedDate.split(",")[0] + ' 1, ' + extractedDate.split(",")[1] + ' 12:00:00');
+        //this.sheetDate = new Date(Date.UTC(this.sheetDate.getYear(), this.sheetDate.getMonth(), this.sheetDate.getDate(), 0, 0, 0, 0 ));
         new Promise((resolve, reject) => {
-            this.uploadLocation("state", "lga", "ward", "facility"); 
+            this.uploadLocation("state2", "lga2", "ward2", "facility2"); 
             resolve();
         }).then((result) => {
             sheetNameList.forEach((sheetName) => { 
@@ -45,10 +52,8 @@ class DataUploader {
         ];
             
 
-        //var getFacilityViewIdQuery = "Select Id from FacilityView WHERE StateId = (SELECT Id FROM State WHERE Name = @state) and LGAId = (SELECT Id FROM LGA WHERE Name = @lga) and WardId = (SELECT Id FROM Ward WHERE Name = @ward) and FacilityId = (SELECT Id FROM Facility WHERE Name = @facility);"
-        var getFacilityViewIdQuery = "Select * from FacilityView";
-
-        
+        var getFacilityViewIdQuery = "Select Id from FacilityView WHERE StateId = (SELECT Id FROM State WHERE Name = @state) and LGAId = (SELECT Id FROM LGA WHERE Name = @lga) and WardId = (SELECT Id FROM Ward WHERE Name = @ward) and FacilityId = (SELECT Id FROM Facility WHERE Name = @facility);"
+                
         var params = [
             { param: "state", type: TYPES.NVarChar, value: state },
             { param: "lga", type: TYPES.NVarChar, value: lga },
@@ -57,23 +62,10 @@ class DataUploader {
         ];
 
         this.sqlHelper.launchInsertQueriesUsingPromise(queries, params).then((result) => {
-            console.log(result);
-            this.sqlHelper.launchSelectQuery([getFacilityViewIdQuery], params);
+            this.sqlHelper.launchSelectQueryUsingPromise(getFacilityViewIdQuery, params).then((result) => {
+                this.locationId = result[0][0].val;
+            });
         });
-
-      //  receivedData.forEach(function(column) {
-      //      console.log("%s\t%s", column.metadata.colName, column.value);
-      //  });
-
-       //this.sqlHelper.launchInsertQueriesInSync(queries, params);
-
-        
-
-    }
-
-    getLocation() {
-        return this.locationId;
-        
     }
 
     uploadFacilityAttendance(sheetName: string) {
@@ -93,9 +85,9 @@ class DataUploader {
                 var headerCell = currentCell + 5;
                 var valueCell = currentCell + 6; 
                 var header = this.workbook.Sheets[sheetName][headerCell].v;
-                var value = this.workbook.Sheets[sheetName][valueCell].v;
+                var dataValue = this.workbook.Sheets[sheetName][valueCell].v;
 
-                if(header != '' && value != '') {
+                if(header != '' && dataValue != '') {
                     var metricName = 'Facility Attendance ' + header;
                     if (header.includes('Female')) {    
                         queries.push("INSERT INTO Metrics (MetricName, SetId) VALUES (@header, " + 
@@ -111,12 +103,14 @@ class DataUploader {
                         params = [];
                         queries = [];
 
-                        queries.push("INSERT INTO Data (MetricId, FacilityId, Value, Time) VALUES ((SELECT Id FROM Metrics WHERE Name = @header)," +
-                        "(SELECT Id FROM FacilityView WHERE Name = 'Facility Attendance' @header))")
+                        queries.push("INSERT INTO Data (MetricId, FacilityId, Value, Time) VALUES ((SELECT Id FROM Metrics WHERE MetricName = @header), @facilityViewId, @dataValue, @dateTime)")
 
-                        params.push({param: "header", type: TYPES.NVarChar, value: metricName});
+                        params.push({param: "header", type: TYPES.NVarChar, value: metricName}); 
+                        params.push({param: "facilityViewId", type: TYPES.BigInt, value: this.locationId});
+                        params.push({param: "dataValue", type: TYPES.BigInt, value: dataValue});                        
+                        params.push({param: "dateTime", type: TYPES.DateTime, value: this.sheetDate});
 
-                        //this.sqlHelper.launchInsertQuery(queries, params);
+                        this.sqlHelper.launchInsertQuery(queries, params);
 
                         return;
                     });
