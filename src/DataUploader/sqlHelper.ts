@@ -50,6 +50,40 @@ export class SqlHelper {
         });
     }
 
+    launchInsertQueries(queries: string[], params?: any[]){
+        this.pool.acquire((err, connection) => {
+            if(err){
+                console.log("error after acquiring connection: " + err);
+                return;
+            }
+
+            var combinedQuery: string = "";       
+            queries.forEach((oneQuery) => {
+                combinedQuery += oneQuery;
+            });
+    
+            var request = new tedious.Request (combinedQuery, (err, rowCount, rows) => {
+                if (err){
+                    console.log("SQL Error number: " + err);
+                }
+                console.log(rowCount + ' row(s) returned');
+                connection.release(); 
+            })
+            .on('row', function(columns) {
+                columns.forEach(function(column) {
+                    console.log("%s\t%s", column.metadata.colName, column.value);
+                });
+            });
+
+            if(params){
+                for(var i = 0; i < params.length; i++){
+                    request.addParameter(params[i].param, params[i].type, params[i].value);
+                }
+            }
+            connection.execSql(request);
+        });
+    }
+
     launchSelectQueryUsingPromise(query: string, params?: any[]){
         var returnDataset = [];
         var dataset = [];
