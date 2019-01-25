@@ -6,35 +6,28 @@ import { TYPES } from 'tedious';
 class DataUploader {
 
     workbook : xlsx.WorkBook;
-    sqlHelper: SqlHelper;
-    locationId: number;
-    sheetDate: any;    
+    sqlHelper: SqlHelper;   
 
     constructor() {
         this.sqlHelper = new SqlHelper(config.get('tediousPoolConfig'), config.get('sqlConnectionPoolConfig'));
-        this.locationId = -1;
     }
 
     uploadXlsxFile(filePath: string){ 
         this.workbook = xlsx.readFile(filePath);
         var sheetNameList: string[] = this.workbook.SheetNames;
-
-        var extractedDate = this.workbook.Sheets[sheetNameList[0]]['A3'].v.split(" ").splice(-2);
-        /**************TEMPORARY DATE FOR TESTING, REMOVE LATER**************/
-        extractedDate = "December,2016";
-        this.sheetDate = new Date(extractedDate.split(",")[0] + ' 1, ' + extractedDate.split(",")[1] + ' 07:00:00');
+        var sheetDate = this.getDateFromWorkbook(this.workbook);
         
-        
-        this.uploadLocation("state2", "lga2", "ward2", "facility2").then((result) => {
+        this.uploadLocation("state2", "lga2", "ward2", "facility2")
+        .then((result) => {
             sheetNameList.forEach((sheetName) => { 
                 switch(sheetName) {
                     case 'Facility Attendance - A Age(Att': {
-                        this.uploadFacilityAttendance(sheetName);
+                        this.uploadFacilityAttendance(sheetName, result, sheetDate);
                         break;
                     }
                 }
-            });
-        })        
+            }); 
+        });     
     }
     
     uploadLocation(state: string, lga: string, ward: string, facility: string) {
@@ -50,7 +43,9 @@ class DataUploader {
                 "(SELECT Id FROM State WHERE Name = @state));"
             ];
                 
-            var getFacilityViewIdQuery = "Select Id from FacilityView WHERE StateId = (SELECT Id FROM State WHERE Name = @state) and LGAId = (SELECT Id FROM LGA WHERE Name = @lga) and WardId = (SELECT Id FROM Ward WHERE Name = @ward) and FacilityId = (SELECT Id FROM Facility WHERE Name = @facility);"
+            var getFacilityViewIdQuery = "Select Id from FacilityView WHERE StateId = (SELECT Id FROM State WHERE Name = @state) " +
+                "and LGAId = (SELECT Id FROM LGA WHERE Name = @lga) and WardId = (SELECT Id FROM Ward WHERE Name = @ward) " + 
+                "and FacilityId = (SELECT Id FROM Facility WHERE Name = @facility);"
                     
             var params = [
                 { param: "state", type: TYPES.NVarChar, value: state },
@@ -59,16 +54,18 @@ class DataUploader {
                 { param: "facility", type: TYPES.NVarChar, value: facility}
             ];
 
-            this.sqlHelper.launchInsertQueriesUsingPromise(queries, params).then((result) => {
-                this.sqlHelper.launchSelectQueryUsingPromise(getFacilityViewIdQuery, params).then((result) => {
-                    this.locationId = result[0][0].val;
-                    resolve();
-                });
-            });
+            this.sqlHelper.launchInsertQueriesUsingPromise(queries, params)
+            .then((result) => {
+                this.sqlHelper.launchSelectQueryUsingPromise(getFacilityViewIdQuery, params)
+                .then((result) => {
+                    resolve(result[0][0].val);
+                })
+            })
         }); 
     }
 
-    uploadFacilityAttendance(sheetName: string) {
+    uploadFacilityAttendance(sheetName: string, locationId, sheetDate) {
+ 
         var queries = [
             "INSERT INTO Groups (GroupName) VALUES ('Facility Attendance');",
             "INSERT INTO Sets (SetName, GroupId) VALUES ('Facility Attendance Male', " +
@@ -76,21 +73,21 @@ class DataUploader {
                 "('Facility Attendance Female', (SELECT Id FROM Groups WHERE GroupName = 'Facility Attendance'));"
         ];
 
-        this.sqlHelper.launchInsertQueriesUsingPromise(queries).then((result) => {
-            
+        this.sqlHelper.launchInsertQueriesUsingPromise(queries)
+        .then((result) => {    
             for (var i = 1; i < 15; i++){
                 var params = [];
                 queries = [];
-                var currentCell = String.fromCharCode('A'.charCodeAt(0) + i);
-                var headerCell = currentCell + 5;
-                var valueCell = currentCell + 6;
-                var header = this.workbook.Sheets[sheetName][headerCell].v;
+                var currentCellCol = String.fromCharCode('A'.charCodeAt(0) + i);
+                var headerCell = currentCellCol + 5;
+                var valueCell = currentCellCol + 6;
+                var headerValue = this.workbook.Sheets[sheetName][headerCell].v;
                 var dataValue = this.workbook.Sheets[sheetName][valueCell].v;
 
-                if(header != '' && dataValue != '') {
-                    var metricName = 'Facility Attendance ' + header;
+                if(headerValue != '' && dataValue != '') {
+                    var metricName = 'Facility Attendance ' + headerValue;
                     var query = '';
-                    if (header.includes('Female')) {    
+                    if (headerValue.includes('Female')) {    
                         queries.push("INSERT INTO Metrics (MetricName, SetId) VALUES (@header, " + 
                             "(SELECT Id FROM Sets WHERE SetName = 'Facility Attendance Female'));");                    
                     } else {
@@ -98,17 +95,26 @@ class DataUploader {
                             "(SELECT Id FROM Sets WHERE SetName = 'Facility Attendance Male'));");
                     }
 
-                    queries.push("INSERT INTO Data (MetricId, FacilityId, Value, Time) VALUES ((SELECT Id FROM Metrics WHERE MetricName = @header), @facilityViewId, @dataValue, @dateTime)");
+                    queries.push("INSERT INTO Data (MetricId, FacilityId, Value, Time) VALUES " + 
+                        "((SELECT Id FROM Metrics WHERE MetricName = @header), @facilityViewId, @dataValue, @dateTime)");
 
                     params.push({param: "header", type: TYPES.NVarChar, value: metricName});
-                    params.push({param: "facilityViewId", type: TYPES.BigInt, value: this.locationId});
+                    params.push({param: "facilityViewId", type: TYPES.BigInt, value: locationId});
                     params.push({param: "dataValue", type: TYPES.BigInt, value: dataValue});                        
-                    params.push({param: "dateTime", type: TYPES.DateTime, value: this.sheetDate});
+                    params.push({param: "dateTime", type: TYPES.DateTime, value: sheetDate});
                    
                     this.sqlHelper.launchInsertQueries(queries, params);
                 }     
             }
         });        
+    }
+
+    getDateFromWorkbook(workbook): Date{
+        var sheets = this.workbook.SheetNames;
+        var extractedDate = workbook.Sheets[sheets[0]]['A3'].v.split(" ").splice(-2);
+        /**************TEMPORARY DATE FOR TESTING, REMOVE LATER**************/
+        extractedDate = "December,2016";
+        return new Date(extractedDate.split(",")[0] + ' 1, ' + extractedDate.split(",")[1] + ' 07:00:00');
     }
 }
 

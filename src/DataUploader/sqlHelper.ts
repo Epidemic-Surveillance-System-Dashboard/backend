@@ -32,7 +32,7 @@ export class SqlHelper {
                     }
                     console.log(rowCount + ' row(s) returned');
                     connection.release(); 
-                    resolve();
+                    resolve(rowCount);
                 })
                 .on('row', function(columns) {
                     columns.forEach(function(column) {
@@ -85,8 +85,8 @@ export class SqlHelper {
     }
 
     launchSelectQueryUsingPromise(query: string, params?: any[]){
-        var returnDataset = [];
-        var dataset = [];
+        var dataSet = [];
+        var oneDataRow = [];
         return new Promise((resolve, reject) => {
             this.pool.acquire((err, connection) => {
                 if(err){
@@ -100,20 +100,15 @@ export class SqlHelper {
                     }
                     console.log(rowCount + ' row(s) returned');
                     connection.release(); 
-                    resolve(returnDataset);
+                    resolve(dataSet);
                 })
                 .on('row', function(columns) {
                     columns.forEach(function(column) {
                         console.log("%s\t%s", column.metadata.colName, column.value);
-                        dataset.push(
-                            {
-                                column: column.metadata.colName,
-                                val: column.value
-                            }
-                        );                        
+                        oneDataRow.push({column: column.metadata.colName, val: column.value});                        
                     });  
-                    returnDataset.push(dataset);   
-                    dataset = [];               
+                    dataSet.push(oneDataRow);   
+                    oneDataRow = [];               
                 });
     
                 if(params){
@@ -123,6 +118,42 @@ export class SqlHelper {
                 }
                 connection.execSql(request);
             });
+        });
+    }
+
+    launchSelectQuery(query: string, params?: any[]){
+        var dataSet = [];
+        var oneDataRow = [];
+    
+        this.pool.acquire((err, connection) => {
+            if(err){
+                console.log("error after acquiring connection: " + err);
+                return;
+            }
+
+            var request = new tedious.Request (query, (err, rowCount, rows) => {
+                if (err){
+                    console.log("SQL Error number: " + err);
+                }
+                console.log(rowCount + ' row(s) returned');
+                connection.release(); 
+                return(dataSet);
+            })
+            .on('row', function(columns) {
+                columns.forEach(function(column) {
+                    console.log("%s\t%s", column.metadata.colName, column.value);
+                    oneDataRow.push({column: column.metadata.colName, val: column.value});                        
+                });  
+                dataSet.push(oneDataRow);   
+                oneDataRow = [];               
+            });
+
+            if(params){
+                for(var i = 0; i < params.length; i++){
+                    request.addParameter(params[i].param, params[i].type, params[i].value);
+                }
+            }
+            connection.execSql(request);
         });
     }
 
@@ -138,7 +169,8 @@ export class SqlHelper {
                     console.log("SQL Error number: " + err);
                 }
                 console.log(rowCount + ' row(s) returned'); 
-                connection.release(); 
+                connection.release();
+                return(rowCount); 
         
             })
             .on('row', function(columns) {
@@ -146,36 +178,6 @@ export class SqlHelper {
                     console.log("%s\t%s", column.metadata.colName, column.value);
                 });
             });
-            if(params){
-                for(var i = 0; i < params.length; i++){
-                    request.addParameter(params[i].param, params[i].type, params[i].value);
-                }
-            }
-            connection.execSql(request);
-        });
-    }
-
-    launchSelectQuery(query, params?: any[]){
-
-        this.pool.acquire((err, connection) => {
-            if(err){
-                console.log("error after acquiring connection: " + err);
-                return;
-            }
-            var request = new tedious.Request (query, (err, rowCount, rows) => {
-                if (err){
-                    console.log("SQL Error number: " + err);
-                }
-                console.log(rowCount + ' row(s) returned'); 
-                console.log(rows); 
-                connection.release(); 
-        
-            })
-            /*.on('row', (columns) =>{
-                columns.forEach(function(column) {
-                    console.log("%s\t%s", column.metadata.colName, column.value);
-                });
-            });*/
             if(params){
                 for(var i = 0; i < params.length; i++){
                     request.addParameter(params[i].param, params[i].type, params[i].value);
