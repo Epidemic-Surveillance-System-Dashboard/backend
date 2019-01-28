@@ -9,7 +9,7 @@ export class LGADataAccess extends SqlDataAccess {
     }
 
     insertLGA(name: string, stateId: number){
-        return this.sqlPool.then(pool => {
+        return SqlDataAccess.sqlPool.then(pool => {
             return pool.request()
             .input('lga', mssql.NVarChar, name)
             .input('stateId', mssql.BigInt, stateId)
@@ -18,7 +18,7 @@ export class LGADataAccess extends SqlDataAccess {
     }
 
     getLGAId(name: string){
-        return this.sqlPool.then(pool => {
+        return SqlDataAccess.sqlPool.then(pool => {
             return pool.request()
             .input('lga', mssql.NVarChar, name)
             .query('SELECT Id FROM LGA WHERE Name = @lga;');

@@ -8,7 +8,7 @@ export class FacilityViewDataAccess extends SqlDataAccess {
     }
 
     insertFacilityView(facilityId: number, wardId: number, lgaId: number, stateId: number){
-        return this.sqlPool.then(pool => {
+        return SqlDataAccess.sqlPool.then(pool => {
             return pool.request()
             .input('facilityId', mssql.BigInt, facilityId)
             .input('wardId', mssql.BigInt, wardId)
@@ -19,7 +19,7 @@ export class FacilityViewDataAccess extends SqlDataAccess {
     }
 
     getFacilityViewId(facilityId: number, wardId: number, lgaId: number, stateId: number){
-        return this.sqlPool.then(pool => {
+        return SqlDataAccess.sqlPool.then(pool => {
             return pool.request()
             .input('facilityId', mssql.BigInt, facilityId)
             .input('wardId', mssql.BigInt, wardId)

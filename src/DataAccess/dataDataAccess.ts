@@ -8,7 +8,7 @@ export class DataDataAccess extends SqlDataAccess {
     }
 
     insertData(metricId: number, facilityViewId: number, data: number, date: Date){
-        return this.sqlPool.then(pool => {
+        return SqlDataAccess.sqlPool.then(pool => {
             return pool.request()
             .input('metricId', mssql.BigInt, metricId)
             .input('facilityViewId', mssql.BigInt, facilityViewId)

@@ -8,7 +8,7 @@ export class FacilityDataAccess extends SqlDataAccess {
     }
 
     insertFacility(name: string, wardId: number){
-        return this.sqlPool.then(pool => {
+        return SqlDataAccess.sqlPool.then(pool => {
             return pool.request()
             .input('facility', mssql.NVarChar, name)
             .input('wardId', mssql.BigInt, wardId)
@@ -17,7 +17,7 @@ export class FacilityDataAccess extends SqlDataAccess {
     }
 
     getFacilityId(name: string){
-        return this.sqlPool.then(pool => {
+        return SqlDataAccess.sqlPool.then(pool => {
             return pool.request()
             .input('facility', mssql.NVarChar, name)
             .query('SELECT Id FROM Facility WHERE Name = @facility');

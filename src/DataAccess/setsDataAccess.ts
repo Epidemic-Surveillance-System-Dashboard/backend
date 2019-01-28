@@ -9,7 +9,7 @@ export class SetsDataAccess extends SqlDataAccess {
     }
 
     insertSet(name: string, groupId: number){
-        return this.sqlPool.then(pool => {
+        return SqlDataAccess.sqlPool.then(pool => {
             return pool.request()
             .input('name', mssql.NVarChar, name)
             .input('groupId', mssql.BigInt, groupId)
@@ -18,7 +18,7 @@ export class SetsDataAccess extends SqlDataAccess {
     }
 
     getSetId(name: string){
-        return this.sqlPool.then(pool => {
+        return SqlDataAccess.sqlPool.then(pool => {
             return pool.request()
             .input('name', mssql.NVarChar, name)
             .query('SELECT Id FROM Sets WHERE SetName = @name');

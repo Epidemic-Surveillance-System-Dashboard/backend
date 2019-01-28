@@ -9,7 +9,7 @@ export class MetricsDataAccess extends SqlDataAccess {
     }
 
     insertMetric(name: string, setId: number){
-        return this.sqlPool.then(pool => {
+        return SqlDataAccess.sqlPool.then(pool => {
             return pool.request()
             .input('name', mssql.NVarChar, name)
             .input('setId', mssql.BigInt, setId)
@@ -18,7 +18,7 @@ export class MetricsDataAccess extends SqlDataAccess {
     }
 
     getMetricId(name: string){
-        return this.sqlPool.then(pool => {
+        return SqlDataAccess.sqlPool.then(pool => {
             return pool.request()
             .input('name', mssql.NVarChar, name)
             .query('SELECT Id FROM Metrics WHERE MetricName = @name');
