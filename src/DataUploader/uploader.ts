@@ -91,7 +91,6 @@ class DataUploader {
             var setName = '';
             if(headerValue != '' && dataValue != '') {
                 var metricName = 'Facility Attendance ' + headerValue;
-                console.log(metricName);
                 if (headerValue.includes('Female')) { 
                     setName = 'Facility Attendance Female';                    
                 } 
@@ -99,7 +98,7 @@ class DataUploader {
                     setName = 'Facility Attendance Male'; 
                 }
 
-                console.log("2: " + metricName);
+                console.log("Uploaded: " + metricName);
                 try{
                     var setIdResult = await setsDataAccess.getSetId(setName);
                     await metricDataAccess.insertMetric(metricName, setIdResult.recordset[0].Id);
