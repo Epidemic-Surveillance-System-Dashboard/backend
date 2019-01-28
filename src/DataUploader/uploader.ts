@@ -36,7 +36,6 @@ class DataUploader {
     }
     
     async uploadLocation(state: string, lga: string, ward: string, facility: string) {
-      //  return new Promise((resolve, reject) => {
         var sqlConfig = config.get('sqlConfig');
         var stateDataAccess = new StateDataAccess(sqlConfig);
         var lgaDataAccess = new LGADataAccess(sqlConfig);
