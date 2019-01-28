@@ -5,7 +5,6 @@ export class LGADataAccess extends SqlDataAccess {
 
     constructor(config: any){
         super(JSON.parse(JSON.stringify(config)));
-        this.config = JSON.parse(JSON.stringify(config));
     }
 
     insertLGA(name: string, stateId: number){

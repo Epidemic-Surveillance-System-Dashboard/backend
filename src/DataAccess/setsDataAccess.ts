@@ -5,7 +5,6 @@ export class SetsDataAccess extends SqlDataAccess {
 
     constructor(config: any){
         super(JSON.parse(JSON.stringify(config)));
-        this.config = JSON.parse(JSON.stringify(config));
     }
 
     insertSet(name: string, groupId: number){

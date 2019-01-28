@@ -5,7 +5,6 @@ export class MetricsDataAccess extends SqlDataAccess {
 
     constructor(config: any){
         super(JSON.parse(JSON.stringify(config)));
-        this.config = JSON.parse(JSON.stringify(config));
     }
 
     insertMetric(name: string, setId: number){
