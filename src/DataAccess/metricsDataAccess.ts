@@ -4,7 +4,7 @@ import * as mssql from 'mssql';
 export class MetricsDataAccess extends SqlDataAccess {
 
     constructor(config: any){
-        super(JSON.parse(JSON.stringify(config)));
+        super(config);
     }
 
     insertMetric(name: string, setId: number){
@@ -12,7 +12,14 @@ export class MetricsDataAccess extends SqlDataAccess {
             return pool.request()
             .input('name', mssql.NVarChar, name)
             .input('setId', mssql.BigInt, setId)
-            .query('INSERT INTO Metrics (MetricName, SetId) VALUES (@name, @setId);');
+            .query(`IF NOT EXISTS(SELECT * FROM Metrics WHERE MetricName = @name)
+            BEGIN
+            INSERT INTO Metrics (MetricName, SetId) VALUES (@name, @setId) SELECT SCOPE_IDENTITY() as Id;
+            END
+            ELSE
+            BEGIN
+              SELECT Id FROM Metrics WHERE MetricName = @name
+            END`);
         });
     }
 

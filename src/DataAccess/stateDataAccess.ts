@@ -5,14 +5,21 @@ import * as mssql from 'mssql';
 export class StateDataAccess extends SqlDataAccess{
 
     constructor(config: any){
-        super(JSON.parse(JSON.stringify(config)));
+        super(config);
     }
 
     insertState(name: string){
         return SqlDataAccess.sqlPool.then((pool) => {
             return pool.request()
             .input('state', mssql.NVarChar, name)
-            .query('INSERT INTO State (Name) VALUES (@state);');
+            .query(`IF NOT EXISTS(SELECT * FROM state WHERE Name = @state)
+            BEGIN
+              insert into state (Name) VALUES (@state) select SCOPE_IDENTITY() as Id
+            END
+            ELSE
+            BEGIN
+              SELECT Id FROM state WHERE Name = @state
+            END`);
         });
     }
 
@@ -24,6 +31,3 @@ export class StateDataAccess extends SqlDataAccess{
         });
     }
 }
-
-var test = new StateDataAccess(config.get('sqlConfig'));
-test.insertState('stater1234');

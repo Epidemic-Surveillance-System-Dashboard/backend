@@ -4,7 +4,7 @@ import * as mssql from 'mssql';
 export class DataDataAccess extends SqlDataAccess {
 
     constructor(config: any){
-        super(JSON.parse(JSON.stringify(config)));
+        super(config);
     }
 
     insertData(metricId: number, facilityViewId: number, data: number, date: Date){
@@ -14,7 +14,7 @@ export class DataDataAccess extends SqlDataAccess {
             .input('facilityViewId', mssql.BigInt, facilityViewId)
             .input('data', mssql.BigInt, data)
             .input('date', mssql.DateTime, date)
-            .query('INSERT INTO Data (MetricId, FacilityId, Value, Time) VALUES (@metricId, @facilityViewId, @data, @date)');
+            .query('INSERT INTO Data (MetricId, FacilityId, Value, Time) VALUES (@metricId, @facilityViewId, @data, @date); SELECT SCOPE_IDENTITY() as Id');
         });
     }
 }

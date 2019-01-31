@@ -4,7 +4,7 @@ import * as mssql from 'mssql';
 export class FacilityDataAccess extends SqlDataAccess {
 
     constructor(config: any){
-        super(JSON.parse(JSON.stringify(config)));
+        super(config);
     }
 
     insertFacility(name: string, wardId: number){
@@ -12,7 +12,14 @@ export class FacilityDataAccess extends SqlDataAccess {
             return pool.request()
             .input('facility', mssql.NVarChar, name)
             .input('wardId', mssql.BigInt, wardId)
-            .query('INSERT INTO Facility (Name, WardId) VALUES (@facility, @wardId);');
+            .query(`IF NOT EXISTS(SELECT * FROM Facility WHERE Name = @facility)
+            BEGIN
+                INSERT INTO Facility (Name, WardId) VALUES (@facility, @wardId) SELECT SCOPE_IDENTITY() as Id;
+            END
+            ELSE
+            BEGIN
+              SELECT Id FROM Facility WHERE Name = @facility
+            END`);
         });
     }
 
