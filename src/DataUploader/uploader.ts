@@ -147,7 +147,12 @@ class DataUploader {
                 }
 
                 case 'Maternal Mortality A default': {
-                    this.uploadMaternalMortalityA(sheetName, facilityViewId, sheetDate);
+                    //this.uploadMaternalMortalityA(sheetName, facilityViewId, sheetDate);
+                    break;
+                }
+
+                case 'Maternal Mortality B Maternal D': {
+                    this.uploadMaternalMortalityB(sheetName, facilityViewId, sheetDate);
                     break;
                 }
 
@@ -1231,6 +1236,44 @@ class DataUploader {
                 }
                 catch(e){
                     console.log("uploadMaternalMortalityA error: " + e);
+                }
+            }     
+        }
+    }
+
+    async uploadMaternalMortalityB(sheetName: string, facilityViewId, sheetDate) {
+        var sqlConfig = config.get('sqlConfig');
+        var groupsDataAccess = new GroupsDataAccess(sqlConfig);
+        var setsDataAccess = new SetsDataAccess(sqlConfig);
+        var metricDataAccess = new MetricsDataAccess(sqlConfig);
+        var dataDataAccess = new DataDataAccess(sqlConfig);
+
+        try {
+            var groupResult = await groupsDataAccess.insertGroup('Maternal Mortality B Maternal D');
+            await setsDataAccess.insertSet('Maternal Mortality B', groupResult.recordset[0].Id);
+        }
+        catch(e){
+            console.log("Insert group/set error: " + e);
+        }
+        
+        for (var i = 1; i < 11; i++){
+            var currentCellCol = String.fromCharCode('A'.charCodeAt(0) + i);
+            var headerCell = currentCellCol + 5;
+            var valueCell = currentCellCol + 6;
+            var headerValue = this.workbook.Sheets[sheetName][headerCell].v;
+            var dataValue = this.workbook.Sheets[sheetName][valueCell].v;
+
+            var setName = 'Maternal Mortality B';
+            if(headerValue != '' && dataValue != '') {
+                var metricName = 'Maternal Mortality B ' + headerValue;
+                console.log("Uploaded: " + metricName);
+                try{
+                    var setIdResult = await setsDataAccess.getSetId(setName);
+                    var metricIdResult = await metricDataAccess.insertMetric(metricName, setIdResult.recordset[0].Id);
+                    dataDataAccess.insertData(metricIdResult.recordset[0].Id, facilityViewId, dataValue, sheetDate);
+                }
+                catch(e){
+                    console.log("uploadMaternalMortalityB error: " + e);
                 }
             }     
         }
