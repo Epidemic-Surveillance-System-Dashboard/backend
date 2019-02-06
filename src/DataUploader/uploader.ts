@@ -152,10 +152,88 @@ class DataUploader {
                 }
 
                 case 'Maternal Mortality B Maternal D': {
-                    this.uploadMaternalMortalityB(sheetName, facilityViewId, sheetDate);
+                    //this.uploadMaternalMortalityB(sheetName, facilityViewId, sheetDate);
                     break;
                 }
 
+                case 'Neonatal Deaths Neonatal Death': {
+                    //this.uploadNeoNatalDeaths(sheetName, facilityViewId, sheetDate);
+                    break;
+                }
+
+                case 'Under 5 Mortality  Under 5 mort': {
+                    //this.uploadUnder5Mortality(sheetName, facilityViewId, sheetDate);
+                    break;
+                }
+
+                case 'HIV Counselling & Testing A Gen': {
+                    //this.uploadHIVCounsellingAndTesting(sheetName, facilityViewId, sheetDate);
+                    break;
+                }
+
+                case 'HIV Counselling & Testing B def': {
+                    //this.uploadHIVCounsellingAndTestingB(sheetName, facilityViewId, sheetDate);
+                    break;
+                }
+
+                case 'HIV care & treatment Age (15yrs': {
+                    //this.uploadHIVCareTreatment(sheetName, facilityViewId, sheetDate);
+                    break;
+                }
+
+                case 'SRH-HIV Integration Gender': {
+                    //this.uploadSRHHIV(sheetName, facilityViewId, sheetDate);
+                    break;
+                }
+
+                case 'TBHIV default': {
+                    //this.uploadTBHIV(sheetName, facilityViewId, sheetDate);
+                    break;
+                }
+
+                case 'PMTCT - Mother default': {
+                    //this.uploadPMTCT(sheetName, facilityViewId, sheetDate);
+                    break;
+                }
+
+                case 'PMTCT - Infant Gender': {
+                    //this.uploadPMTCTInfant(sheetName, facilityViewId, sheetDate);
+                    break;
+                }
+                case 'TBLP Age(TBLP)': {
+                    //this.uploadTBLP(sheetName, facilityViewId, sheetDate);
+                    break;
+                } 
+
+                case 'Malaria Testing Age(Malaria)': {
+                    //this.uploadMalariaTesting(sheetName, facilityViewId, sheetDate);
+                    break;
+                } 
+
+                case 'Malaria in Pregnancy default': {
+                    //this.uploadMalariaInPregnancy(sheetName, facilityViewId, sheetDate);
+                    break;
+                } 
+                
+                case 'Malaria Cases Age(Malaria)': {
+                    //this.uploadMalariaCases(sheetName, facilityViewId, sheetDate);
+                    break;
+                } 
+
+                case 'Malaria Treatment Age(Malaria)': {
+                    //this.uploadMalariaTreament(sheetName, facilityViewId, sheetDate);
+                    break;
+                }
+                
+                case 'Obstetric Fistula A default': {
+                    this.uploadFistula(sheetName, facilityViewId, sheetDate);
+                    break;
+                }
+             
+                case 'Commodity Availability default': {
+                    this.uploadCommodity(sheetName, facilityViewId, sheetDate);
+                    break;
+                }
                 
             }
         });  
@@ -1279,7 +1357,687 @@ class DataUploader {
         }
     }
 
+    //////
 
+    async uploadNeoNatalDeaths(sheetName: string, facilityViewId, sheetDate) {
+        var sqlConfig = config.get('sqlConfig');
+        var groupsDataAccess = new GroupsDataAccess(sqlConfig);
+        var setsDataAccess = new SetsDataAccess(sqlConfig);
+        var metricDataAccess = new MetricsDataAccess(sqlConfig);
+        var dataDataAccess = new DataDataAccess(sqlConfig);
+
+        try {
+            var groupResult = await groupsDataAccess.insertGroup('Neonatal Deaths');
+            await setsDataAccess.insertSet('Neonatal Deaths', groupResult.recordset[0].Id);
+        }
+        catch(e){
+            console.log("Insert group/set error: " + e);
+        }
+        
+        for (var i = 1; i < 8; i++){
+            var currentCellCol = String.fromCharCode('A'.charCodeAt(0) + i);
+            var headerCell = currentCellCol + 5;
+            var valueCell = currentCellCol + 6;
+            var headerValue = this.workbook.Sheets[sheetName][headerCell].v;
+            var dataValue = this.workbook.Sheets[sheetName][valueCell].v;
+
+            var setName = 'Neonatal Deaths';
+            if(headerValue != '' && dataValue != '') {
+                var metricName = 'Neonatal Deaths Cause ' + headerValue;
+                console.log("Uploaded: " + metricName);
+                try{
+                    var setIdResult = await setsDataAccess.getSetId(setName);
+                    var metricIdResult = await metricDataAccess.insertMetric(metricName, setIdResult.recordset[0].Id);
+                    dataDataAccess.insertData(metricIdResult.recordset[0].Id, facilityViewId, dataValue, sheetDate);
+                }
+                catch(e){
+                    console.log("Neonatal Deaths error: " + e);
+                }
+            }     
+        }
+    }
+
+    async uploadUnder5Mortality(sheetName: string, facilityViewId, sheetDate) {
+        var sqlConfig = config.get('sqlConfig');
+        var groupsDataAccess = new GroupsDataAccess(sqlConfig);
+        var setsDataAccess = new SetsDataAccess(sqlConfig);
+        var metricDataAccess = new MetricsDataAccess(sqlConfig);
+        var dataDataAccess = new DataDataAccess(sqlConfig);
+
+        try {
+            var groupResult = await groupsDataAccess.insertGroup('Under 5 Mortality');
+            await setsDataAccess.insertSet('Under 5 Mortality', groupResult.recordset[0].Id);
+        }
+        catch(e){
+            console.log("Insert group/set error: " + e);
+        }
+        
+        for (var i = 1; i < 6; i++){
+            var currentCellCol = String.fromCharCode('A'.charCodeAt(0) + i);
+            var headerCell = currentCellCol + 5;
+            var valueCell = currentCellCol + 6;
+            var headerValue = this.workbook.Sheets[sheetName][headerCell].v;
+            var dataValue = this.workbook.Sheets[sheetName][valueCell].v;
+
+            var setName = 'Under 5 Mortality';
+            if(headerValue != '' && dataValue != '') {
+                var metricName = 'Under 5 Mortality Cause ' + headerValue;
+                console.log("Uploaded: " + metricName);
+                try{
+                    var setIdResult = await setsDataAccess.getSetId(setName);
+                    var metricIdResult = await metricDataAccess.insertMetric(metricName, setIdResult.recordset[0].Id);
+                    dataDataAccess.insertData(metricIdResult.recordset[0].Id, facilityViewId, dataValue, sheetDate);
+                }
+                catch(e){
+                    console.log("Under 5 Mortality error: " + e);
+                }
+            }     
+        }
+    }
+
+    async uploadHIVCounsellingAndTesting(sheetName: string, facilityViewId, sheetDate) {
+        var sqlConfig = config.get('sqlConfig');
+        var groupsDataAccess = new GroupsDataAccess(sqlConfig);
+        var setsDataAccess = new SetsDataAccess(sqlConfig);
+        var metricDataAccess = new MetricsDataAccess(sqlConfig);
+        var dataDataAccess = new DataDataAccess(sqlConfig);
+
+        try {
+            var groupResult = await groupsDataAccess.insertGroup('HIV Counselling And Testing');
+            await setsDataAccess.insertSet('HIV Counselling And Testing Female', groupResult.recordset[0].Id); 
+            await setsDataAccess.insertSet('HIV Counselling And Testing Male', groupResult.recordset[0].Id);     
+        }       
+        catch(e) {
+            console.log("Insert group/set error: " + e);
+        }
+        
+        for (var j = 1; j < 15; j++) {
+            var currentCellCol = String.fromCharCode('A'.charCodeAt(0) + j);
+            var currentColumnTitle =  this.workbook.Sheets[sheetName][currentCellCol + 5].v;            
+            for (var i = 6; i < 8; i++){            
+                var headerCell = 'A' + i;
+                var valueCell = currentCellCol + i;
+                var headerValue = this.workbook.Sheets[sheetName][headerCell].v;
+                var dataValue = this.workbook.Sheets[sheetName][valueCell].v;
+
+                var setName = '';
+                if (currentColumnTitle.includes('Female')) { 
+                    setName = 'HIV Counselling And Testing Female';                    
+                } 
+                else {
+                    setName = 'HIV Counselling And Testing Male'; 
+                }
+                if(headerValue != '' && dataValue != '') {
+                    var metricName = headerValue + ' ' + currentColumnTitle;                
+                    console.log("Uploaded: " + metricName);                
+                    try{
+                        var setIdResult = await setsDataAccess.getSetId(setName);
+                        var metricIdResult = await metricDataAccess.insertMetric(metricName, setIdResult.recordset[0].Id);
+                        dataDataAccess.insertData(metricIdResult.recordset[0].Id, facilityViewId, dataValue, sheetDate);
+                    }
+                    catch(e){
+                        console.log("HIV Counselling And Testing error: " + e);
+                    }
+                }     
+            }
+        }
+    }
+
+    async uploadHIVCounsellingAndTestingB(sheetName: string, facilityViewId, sheetDate) {
+        var sqlConfig = config.get('sqlConfig');
+        var groupsDataAccess = new GroupsDataAccess(sqlConfig);
+        var setsDataAccess = new SetsDataAccess(sqlConfig);
+        var metricDataAccess = new MetricsDataAccess(sqlConfig);
+        var dataDataAccess = new DataDataAccess(sqlConfig);
+
+        try {
+            var groupResult = await groupsDataAccess.insertGroup('HIV Counselling And Testing');
+            await setsDataAccess.insertSet('HIV Counselling Couples', groupResult.recordset[0].Id);    
+        }
+        catch(e) {
+            console.log("Insert group/set error: " + e);
+        }
+        
+        for (var i = 6; i < 8; i++){            
+            var headerCell = 'A' + i;
+            var valueCell = 'B' + i;
+            var headerValue = this.workbook.Sheets[sheetName][headerCell].v;
+            var dataValue = this.workbook.Sheets[sheetName][valueCell].v;
+
+            var setName = 'HIV Counselling Couples';
+            if(headerValue != '' && dataValue != '') {
+                var metricName = headerValue;                
+                console.log("Uploaded: " + metricName);
+                
+                try{
+                    var setIdResult = await setsDataAccess.getSetId(setName);
+                    var metricIdResult = await metricDataAccess.insertMetric(metricName, setIdResult.recordset[0].Id);
+                    dataDataAccess.insertData(metricIdResult.recordset[0].Id, facilityViewId, dataValue, sheetDate);
+                }
+                catch(e){
+                    console.log("HIV Counselling Couples error: " + e);
+                }
+            }     
+        }
+    }
+
+    async uploadHIVCareTreatment(sheetName: string, facilityViewId, sheetDate) {
+        var sqlConfig = config.get('sqlConfig');
+        var groupsDataAccess = new GroupsDataAccess(sqlConfig);
+        var setsDataAccess = new SetsDataAccess(sqlConfig);
+        var metricDataAccess = new MetricsDataAccess(sqlConfig);
+        var dataDataAccess = new DataDataAccess(sqlConfig);
+
+        try {
+            var groupResult = await groupsDataAccess.insertGroup('HIV Care Treatment');
+            await setsDataAccess.insertSet('HIV Care Treatment Female', groupResult.recordset[0].Id); 
+            await setsDataAccess.insertSet('HIV Care Treatment Male', groupResult.recordset[0].Id);     
+        }       
+        catch(e) {
+            console.log("Insert group/set error: " + e);
+        }
+        
+        for (var j = 1; j < 7; j++) {
+            var currentCellCol = String.fromCharCode('A'.charCodeAt(0) + j);
+            var currentColumnTitle =  this.workbook.Sheets[sheetName][currentCellCol + 5].v;            
+            for (var i = 6; i < 8; i++){            
+                var headerCell = 'A' + i;
+                var valueCell = currentCellCol + i;
+                var headerValue = this.workbook.Sheets[sheetName][headerCell].v;
+                var dataValue = this.workbook.Sheets[sheetName][valueCell].v;
+
+                var setName = '';
+                if (currentColumnTitle.includes('Female')) { 
+                    setName = 'HIV Care Treatment Female';                    
+                } 
+                else {
+                    setName = 'HIV Care Treatment Male'; 
+                }
+                if(headerValue != '' && dataValue != '') {
+                    var metricName = headerValue + ' ' + currentColumnTitle;                
+                    console.log("Uploaded: " + metricName);                
+                    try{
+                        var setIdResult = await setsDataAccess.getSetId(setName);
+                        var metricIdResult = await metricDataAccess.insertMetric(metricName, setIdResult.recordset[0].Id);
+                        dataDataAccess.insertData(metricIdResult.recordset[0].Id, facilityViewId, dataValue, sheetDate);
+                    }
+                    catch(e){
+                        console.log("HIV Care Treatment: " + e);
+                    }
+                }     
+            }
+        }
+    }
+
+    async uploadSRHHIV(sheetName: string, facilityViewId, sheetDate) {
+        var sqlConfig = config.get('sqlConfig');
+        var groupsDataAccess = new GroupsDataAccess(sqlConfig);
+        var setsDataAccess = new SetsDataAccess(sqlConfig);
+        var metricDataAccess = new MetricsDataAccess(sqlConfig);
+        var dataDataAccess = new DataDataAccess(sqlConfig);
+
+        try {
+            var groupResult = await groupsDataAccess.insertGroup('SRHHIV Integration');
+            await setsDataAccess.insertSet('SRHHIV Integration', groupResult.recordset[0].Id);     
+        }
+        catch(e) {
+            console.log("Insert group/set error: " + e);
+        }
+        for (var j = 1; j < 4; j++) {
+            var currentCellCol = String.fromCharCode('A'.charCodeAt(0) + j);
+            var currentColumnTitle =  this.workbook.Sheets[sheetName][currentCellCol + 5].v;            
+            for (var i = 6; i < 11; i++){            
+                var headerCell = 'A' + i;
+                var valueCell = currentCellCol + i;
+                var headerValue = this.workbook.Sheets[sheetName][headerCell].v;
+                var dataValue = this.workbook.Sheets[sheetName][valueCell].v;
+
+                var setName = 'SRHHIV Integration';
+                if(headerValue != '' && dataValue != '') {
+                    var metricName = 'SRHHIV ' + headerValue + ' ' + currentColumnTitle;                
+                    console.log("Uploaded: " + metricName);                
+                    try{
+                        var setIdResult = await setsDataAccess.getSetId(setName);
+                        var metricIdResult = await metricDataAccess.insertMetric(metricName, setIdResult.recordset[0].Id);
+                        dataDataAccess.insertData(metricIdResult.recordset[0].Id, facilityViewId, dataValue, sheetDate);
+                    }
+                    catch(e){
+                        console.log("SRHHIV Integration error: " + e);
+                    }
+                }     
+            }
+        }
+    }
+
+    async uploadTBHIV(sheetName: string, facilityViewId, sheetDate) {
+        var sqlConfig = config.get('sqlConfig');
+        var groupsDataAccess = new GroupsDataAccess(sqlConfig);
+        var setsDataAccess = new SetsDataAccess(sqlConfig);
+        var metricDataAccess = new MetricsDataAccess(sqlConfig);
+        var dataDataAccess = new DataDataAccess(sqlConfig);
+
+        try {
+            var groupResult = await groupsDataAccess.insertGroup('TBHIV');
+            await setsDataAccess.insertSet('TBHIV', groupResult.recordset[0].Id);    
+        }
+        catch(e) {
+            console.log("Insert group/set error: " + e);
+        }
+        
+        for (var i = 6; i < 14; i++){            
+            var headerCell = 'A' + i;
+            var valueCell = 'B' + i;
+            var headerValue = this.workbook.Sheets[sheetName][headerCell].v;
+            var dataValue = this.workbook.Sheets[sheetName][valueCell].v;
+
+            var setName = 'TBHIV';
+            if(headerValue != '' && dataValue != '') {
+                var metricName = headerValue;                
+                console.log("Uploaded: " + metricName);
+                
+                try{
+                    var setIdResult = await setsDataAccess.getSetId(setName);
+                    var metricIdResult = await metricDataAccess.insertMetric(metricName, setIdResult.recordset[0].Id);
+                    dataDataAccess.insertData(metricIdResult.recordset[0].Id, facilityViewId, dataValue, sheetDate);
+                }
+                catch(e){
+                    console.log("TBHIV error: " + e);
+                }
+            }     
+        }
+    }
+
+    async uploadPMTCT(sheetName: string, facilityViewId, sheetDate) {
+        var sqlConfig = config.get('sqlConfig');
+        var groupsDataAccess = new GroupsDataAccess(sqlConfig);
+        var setsDataAccess = new SetsDataAccess(sqlConfig);
+        var metricDataAccess = new MetricsDataAccess(sqlConfig);
+        var dataDataAccess = new DataDataAccess(sqlConfig);
+
+        try {
+            var groupResult = await groupsDataAccess.insertGroup('PMTCT');
+            await setsDataAccess.insertSet('PMTCT', groupResult.recordset[0].Id);    
+        }
+        catch(e) {
+            console.log("Insert group/set error: " + e);
+        }
+        
+        for (var i = 6; i < 21; i++){            
+            var headerCell = 'A' + i;
+            var valueCell = 'B' + i;
+            var headerValue = this.workbook.Sheets[sheetName][headerCell].v;
+            var dataValue = this.workbook.Sheets[sheetName][valueCell].v;
+
+            var setName = 'PMTCT';
+            if(headerValue != '' && dataValue != '') {
+                var metricName = headerValue;                
+                console.log("Uploaded: " + metricName);
+                
+                try{
+                    var setIdResult = await setsDataAccess.getSetId(setName);
+                    var metricIdResult = await metricDataAccess.insertMetric(metricName, setIdResult.recordset[0].Id);
+                    dataDataAccess.insertData(metricIdResult.recordset[0].Id, facilityViewId, dataValue, sheetDate);
+                }
+                catch(e){
+                    console.log("PMTCT error: " + e);
+                }
+            }     
+        }
+    }
+
+    async uploadPMTCTInfant(sheetName: string, facilityViewId, sheetDate) {
+        var sqlConfig = config.get('sqlConfig');
+        var groupsDataAccess = new GroupsDataAccess(sqlConfig);
+        var setsDataAccess = new SetsDataAccess(sqlConfig);
+        var metricDataAccess = new MetricsDataAccess(sqlConfig);
+        var dataDataAccess = new DataDataAccess(sqlConfig);
+
+        try {
+            var groupResult = await groupsDataAccess.insertGroup('PMTCT Infant');
+            await setsDataAccess.insertSet('PMTCT Infant Female', groupResult.recordset[0].Id); 
+            await setsDataAccess.insertSet('PMTCT Infant Male', groupResult.recordset[0].Id);     
+        }       
+        catch(e) {
+            console.log("Insert group/set error: " + e);
+        }
+        
+        for (var j = 1; j < 3; j++) {
+            var currentCellCol = String.fromCharCode('A'.charCodeAt(0) + j);
+            var currentColumnTitle =  this.workbook.Sheets[sheetName][currentCellCol + 5].v;            
+            for (var i = 6; i < 13; i++){            
+                var headerCell = 'A' + i;
+                var valueCell = currentCellCol + i;
+                var headerValue = this.workbook.Sheets[sheetName][headerCell].v;
+                var dataValue = this.workbook.Sheets[sheetName][valueCell].v;
+
+                var setName = '';
+                if (currentColumnTitle.includes('Female')) { 
+                    setName = 'PMTCT Infant Female';                    
+                } 
+                else {
+                    setName = 'PMTCT Infant Male'; 
+                }
+                if(headerValue != '' && dataValue != '') {
+                    var metricName = headerValue + ' ' + currentColumnTitle;                
+                    console.log("Uploaded: " + metricName);                
+                    try{
+                        var setIdResult = await setsDataAccess.getSetId(setName);
+                        var metricIdResult = await metricDataAccess.insertMetric(metricName, setIdResult.recordset[0].Id);
+                        dataDataAccess.insertData(metricIdResult.recordset[0].Id, facilityViewId, dataValue, sheetDate);
+                    }
+                    catch(e){
+                        console.log("PMTCT Infant error: " + e);
+                    }
+                }     
+            }
+        }
+    }
+
+    async uploadTBLP(sheetName: string, facilityViewId, sheetDate) {
+        var sqlConfig = config.get('sqlConfig');
+        var groupsDataAccess = new GroupsDataAccess(sqlConfig);
+        var setsDataAccess = new SetsDataAccess(sqlConfig);
+        var metricDataAccess = new MetricsDataAccess(sqlConfig);
+        var dataDataAccess = new DataDataAccess(sqlConfig);
+
+        try {
+            var groupResult = await groupsDataAccess.insertGroup('TB Cases');
+            await setsDataAccess.insertSet('TB Cases Female', groupResult.recordset[0].Id); 
+            await setsDataAccess.insertSet('TB Cases Male', groupResult.recordset[0].Id);     
+        }       
+        catch(e) {
+            console.log("Insert group/set error: " + e);
+        }
+        
+        for (var j = 1; j < 9; j++) {
+            var currentCellCol = String.fromCharCode('A'.charCodeAt(0) + j);
+            var currentColumnTitle =  this.workbook.Sheets[sheetName][currentCellCol + 5].v;            
+            for (var i = 6; i < 13; i++){            
+                var headerCell = 'A' + i;
+                var valueCell = currentCellCol + i;
+                var headerValue = this.workbook.Sheets[sheetName][headerCell].v;
+                var dataValue = this.workbook.Sheets[sheetName][valueCell].v;
+
+                var setName = '';
+                if (currentColumnTitle.includes('Female')) { 
+                    setName = 'TB Cases Female';                    
+                } 
+                else {
+                    setName = 'TB Cases Male'; 
+                }
+                if(headerValue != '' && dataValue != '') {
+                    var metricName = headerValue + ' ' + currentColumnTitle;                
+                    console.log("Uploaded: " + metricName);                
+                    try{
+                        var setIdResult = await setsDataAccess.getSetId(setName);
+                        var metricIdResult = await metricDataAccess.insertMetric(metricName, setIdResult.recordset[0].Id);
+                        dataDataAccess.insertData(metricIdResult.recordset[0].Id, facilityViewId, dataValue, sheetDate);
+                    }
+                    catch(e){
+                        console.log("TB Cases error: " + e);
+                    }
+                }     
+            }
+        }
+    }
+
+    async uploadMalariaTesting(sheetName: string, facilityViewId, sheetDate) {
+        var sqlConfig = config.get('sqlConfig');
+        var groupsDataAccess = new GroupsDataAccess(sqlConfig);
+        var setsDataAccess = new SetsDataAccess(sqlConfig);
+        var metricDataAccess = new MetricsDataAccess(sqlConfig);
+        var dataDataAccess = new DataDataAccess(sqlConfig);
+
+        try {
+            var groupResult = await groupsDataAccess.insertGroup('Malaria Testing');
+            await setsDataAccess.insertSet('Malaria Testing under 5y', groupResult.recordset[0].Id); 
+            await setsDataAccess.insertSet('Malaria Testing over 5y', groupResult.recordset[0].Id);     
+        }       
+        catch(e) {
+            console.log("Insert group/set error: " + e);
+        }
+        
+        for (var j = 1; j < 3; j++) {
+            var currentCellCol = String.fromCharCode('A'.charCodeAt(0) + j);
+            var currentColumnTitle =  this.workbook.Sheets[sheetName][currentCellCol + 5].v;            
+            for (var i = 6; i < 11; i++){            
+                var headerCell = 'A' + i;
+                var valueCell = currentCellCol + i;
+                var headerValue = this.workbook.Sheets[sheetName][headerCell].v;
+                var dataValue = this.workbook.Sheets[sheetName][valueCell].v;
+
+                var setName = '';
+                if (currentColumnTitle.includes('>=')) { 
+                    setName = 'Malaria Testing over 5y';                    
+                } 
+                else {
+                    setName = 'Malaria Testing under 5y'; 
+                }
+                if(headerValue != '' && dataValue != '') {
+                    var metricName = headerValue + ' ' + currentColumnTitle;                
+                    console.log("Uploaded: " + metricName);                
+                    try{
+                        var setIdResult = await setsDataAccess.getSetId(setName);
+                        var metricIdResult = await metricDataAccess.insertMetric(metricName, setIdResult.recordset[0].Id);
+                        dataDataAccess.insertData(metricIdResult.recordset[0].Id, facilityViewId, dataValue, sheetDate);
+                    }
+                    catch(e){
+                        console.log("Malaria Test Cases error: " + e);
+                    }
+                }     
+            }
+        }
+    }
+
+    async uploadMalariaInPregnancy(sheetName: string, facilityViewId, sheetDate) {
+        var sqlConfig = config.get('sqlConfig');
+        var groupsDataAccess = new GroupsDataAccess(sqlConfig);
+        var setsDataAccess = new SetsDataAccess(sqlConfig);
+        var metricDataAccess = new MetricsDataAccess(sqlConfig);
+        var dataDataAccess = new DataDataAccess(sqlConfig);
+
+        try {
+            var groupResult = await groupsDataAccess.insertGroup('Malaria In Pregnancy Cases');
+            await setsDataAccess.insertSet('Malaria In Pregnancy', groupResult.recordset[0].Id);    
+        }
+        catch(e) {
+            console.log("Insert group/set error: " + e);
+        }
+        
+        for (var i = 6; i < 8; i++){            
+            var headerCell = 'A' + i;
+            var valueCell = 'B' + i;
+            var headerValue = this.workbook.Sheets[sheetName][headerCell].v;
+            var dataValue = this.workbook.Sheets[sheetName][valueCell].v;
+
+            var setName = 'Malaria In Pregnancy';
+            if(headerValue != '' && dataValue != '') {
+                var metricName = headerValue;                
+                console.log("Uploaded: " + metricName);
+                
+                try{
+                    var setIdResult = await setsDataAccess.getSetId(setName);
+                    var metricIdResult = await metricDataAccess.insertMetric(metricName, setIdResult.recordset[0].Id);
+                    dataDataAccess.insertData(metricIdResult.recordset[0].Id, facilityViewId, dataValue, sheetDate);
+                }
+                catch(e){
+                    console.log("Malaria In Pregnancy error: " + e);
+                }
+            }     
+        }
+    }
+
+    async uploadMalariaCases(sheetName: string, facilityViewId, sheetDate) {
+        var sqlConfig = config.get('sqlConfig');
+        var groupsDataAccess = new GroupsDataAccess(sqlConfig);
+        var setsDataAccess = new SetsDataAccess(sqlConfig);
+        var metricDataAccess = new MetricsDataAccess(sqlConfig);
+        var dataDataAccess = new DataDataAccess(sqlConfig);
+
+        try {
+            var groupResult = await groupsDataAccess.insertGroup('Malaria Cases');
+            await setsDataAccess.insertSet('Malaria Cases under 5y', groupResult.recordset[0].Id); 
+            await setsDataAccess.insertSet('Malaria Cases over 5y', groupResult.recordset[0].Id);     
+        }       
+        catch(e) {
+            console.log("Insert group/set error: " + e);
+        }
+        
+        for (var j = 1; j < 3; j++) {
+            var currentCellCol = String.fromCharCode('A'.charCodeAt(0) + j);
+            var currentColumnTitle =  this.workbook.Sheets[sheetName][currentCellCol + 5].v;            
+            for (var i = 6; i < 9; i++){            
+                var headerCell = 'A' + i;
+                var valueCell = currentCellCol + i;
+                var headerValue = this.workbook.Sheets[sheetName][headerCell].v;
+                var dataValue = this.workbook.Sheets[sheetName][valueCell].v;
+
+                var setName = '';
+                if (currentColumnTitle.includes('>=')) { 
+                    setName = 'Malaria Cases over 5y';                    
+                } 
+                else {
+                    setName = 'Malaria Cases under 5y'; 
+                }
+                if(headerValue != '' && dataValue != '') {
+                    var metricName = headerValue + ' ' + currentColumnTitle;                
+                    console.log("Uploaded: " + metricName);                
+                    try{
+                        var setIdResult = await setsDataAccess.getSetId(setName);
+                        var metricIdResult = await metricDataAccess.insertMetric(metricName, setIdResult.recordset[0].Id);
+                        dataDataAccess.insertData(metricIdResult.recordset[0].Id, facilityViewId, dataValue, sheetDate);
+                    }
+                    catch(e){
+                        console.log("Malaria Test Cases error: " + e);
+                    }
+                }     
+            }
+        }
+    }
+
+    async uploadMalariaTreament(sheetName: string, facilityViewId, sheetDate) {
+        var sqlConfig = config.get('sqlConfig');
+        var groupsDataAccess = new GroupsDataAccess(sqlConfig);
+        var setsDataAccess = new SetsDataAccess(sqlConfig);
+        var metricDataAccess = new MetricsDataAccess(sqlConfig);
+        var dataDataAccess = new DataDataAccess(sqlConfig);
+
+        try {
+            var groupResult = await groupsDataAccess.insertGroup('Malaria Treatment');
+            await setsDataAccess.insertSet('Malaria Treatment under 5y', groupResult.recordset[0].Id); 
+            await setsDataAccess.insertSet('Malaria Treatment over 5y', groupResult.recordset[0].Id);     
+        }       
+        catch(e) {
+            console.log("Insert group/set error: " + e);
+        }
+        
+        for (var j = 1; j < 3; j++) {
+            var currentCellCol = String.fromCharCode('A'.charCodeAt(0) + j);
+            var currentColumnTitle =  this.workbook.Sheets[sheetName][currentCellCol + 5].v;            
+            for (var i = 6; i < 9; i++){            
+                var headerCell = 'A' + i;
+                var valueCell = currentCellCol + i;
+                var headerValue = this.workbook.Sheets[sheetName][headerCell].v;
+                var dataValue = this.workbook.Sheets[sheetName][valueCell].v;
+
+                var setName = '';
+                if (currentColumnTitle.includes('>=')) { 
+                    setName = 'Malaria Treatment over 5y';                    
+                } 
+                else {
+                    setName = 'Malaria Treatment under 5y'; 
+                }
+                if(headerValue != '' && dataValue != '') {
+                    var metricName = headerValue + ' ' + currentColumnTitle;                
+                    console.log("Uploaded: " + metricName);                
+                    try{
+                        var setIdResult = await setsDataAccess.getSetId(setName);
+                        var metricIdResult = await metricDataAccess.insertMetric(metricName, setIdResult.recordset[0].Id);
+                        dataDataAccess.insertData(metricIdResult.recordset[0].Id, facilityViewId, dataValue, sheetDate);
+                    }
+                    catch(e){
+                        console.log("Malaria Test Cases error: " + e);
+                    }
+                }     
+            }
+        }
+    }
+
+    async uploadFistula(sheetName: string, facilityViewId, sheetDate) {
+        var sqlConfig = config.get('sqlConfig');
+        var groupsDataAccess = new GroupsDataAccess(sqlConfig);
+        var setsDataAccess = new SetsDataAccess(sqlConfig);
+        var metricDataAccess = new MetricsDataAccess(sqlConfig);
+        var dataDataAccess = new DataDataAccess(sqlConfig);
+
+        try {
+            var groupResult = await groupsDataAccess.insertGroup('Obstetric Fistula Cases');
+            await setsDataAccess.insertSet('Obstetric Fistula', groupResult.recordset[0].Id);    
+        }
+        catch(e) {
+            console.log("Insert group/set error: " + e);
+        }
+        
+        for (var i = 6; i < 7; i++){            
+            var headerCell = 'A' + i;
+            var valueCell = 'B' + i;
+            var headerValue = this.workbook.Sheets[sheetName][headerCell].v;
+            var dataValue = this.workbook.Sheets[sheetName][valueCell].v;
+
+            var setName = 'Obstetric Fistula';
+            if(headerValue != '' && dataValue != '') {
+                var metricName = headerValue;                
+                console.log("Uploaded: " + metricName);
+                
+                try{
+                    var setIdResult = await setsDataAccess.getSetId(setName);
+                    var metricIdResult = await metricDataAccess.insertMetric(metricName, setIdResult.recordset[0].Id);
+                    dataDataAccess.insertData(metricIdResult.recordset[0].Id, facilityViewId, dataValue, sheetDate);
+                }
+                catch(e){
+                    console.log("Obstetric Fistula error: " + e);
+                }
+            }     
+        }
+    }
+
+    async uploadCommodity(sheetName: string, facilityViewId, sheetDate) {
+        var sqlConfig = config.get('sqlConfig');
+        var groupsDataAccess = new GroupsDataAccess(sqlConfig);
+        var setsDataAccess = new SetsDataAccess(sqlConfig);
+        var metricDataAccess = new MetricsDataAccess(sqlConfig);
+        var dataDataAccess = new DataDataAccess(sqlConfig);
+
+        try {
+            var groupResult = await groupsDataAccess.insertGroup('Commodity');
+            await setsDataAccess.insertSet('Commodity', groupResult.recordset[0].Id);    
+        }
+        catch(e) {
+            console.log("Insert group/set error: " + e);
+        }
+        
+        for (var i = 6; i < 31; i++){            
+            var headerCell = 'A' + i;
+            var valueCell = 'B' + i;
+            var headerValue = this.workbook.Sheets[sheetName][headerCell].v;
+            var dataValue = this.workbook.Sheets[sheetName][valueCell].v;
+
+            var setName = 'Commodity';
+            if(headerValue != '' && dataValue != '') {
+                var metricName = headerValue;                
+                console.log("Uploaded: " + metricName);
+                
+                try{
+                    var setIdResult = await setsDataAccess.getSetId(setName);
+                    var metricIdResult = await metricDataAccess.insertMetric(metricName, setIdResult.recordset[0].Id);
+                    dataDataAccess.insertData(metricIdResult.recordset[0].Id, facilityViewId, dataValue, sheetDate);
+                }
+                catch(e){
+                    console.log("Obstetric Fistula error: " + e);
+                }
+            }     
+        }
+    }
 
     getDateFromWorkbook(workbook): Date{
         var sheets = this.workbook.SheetNames;
