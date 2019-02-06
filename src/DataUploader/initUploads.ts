@@ -1,7 +1,7 @@
 import { DataUploader } from './uploader';
 import * as fs from 'fs';
 
-const folder = "build/src/DataUploader/TestFolder";
+const folder = "/Users/jackiengo/Google Drive/Capstone/data";
 const uploader = new DataUploader();
 fs.readdir(folder, (err, files) => {
 

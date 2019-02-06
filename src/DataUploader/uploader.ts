@@ -208,7 +208,7 @@ export class DataUploader {
                 case 'Malaria Testing Age(Malaria)': {
                     this.uploadMalariaTesting(sheetName, facilityViewId, sheetDate);
                     break;
-                } 
+                }
 
                 case 'Malaria in Pregnancy default': {
                     this.uploadMalariaInPregnancy(sheetName, facilityViewId, sheetDate);
