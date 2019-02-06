@@ -10,218 +10,218 @@ import { SetsDataAccess } from '../DataAccess/setsDataAccess';
 import { MetricsDataAccess } from '../DataAccess/metricsDataAccess';
 import { DataDataAccess } from '../DataAccess/dataDataAccess';
 
-class DataUploader {
+export class DataUploader {
 
     workbook : xlsx.WorkBook; 
 
     constructor() {}
 
-    async uploadXlsxFile(filePath: string){ 
-        this.workbook = xlsx.readFile(filePath);
+    async uploadXlsxFile(fileName: string){ 
+        this.workbook = xlsx.readFile(fileName);
         var sheetNameList: string[] = this.workbook.SheetNames;
         var sheetDate = this.getDateFromWorkbook(this.workbook);
-
-        var facilityViewId = await this.uploadLocation("state5", "lga5", "ward5", "facility5");
+        var fileInfo = this.getFileInfo(fileName);
+        var facilityViewId = await this.uploadLocation(fileInfo[0], fileInfo[1], fileInfo[2], fileInfo[3]);
         console.log("locations uploaded");
         sheetNameList.forEach((sheetName) => { 
             switch(sheetName) {
 
                 case 'Facility Attendance - A Age(Att': {
-                    //this.uploadFacilityAttendanceA(sheetName, facilityViewId, sheetDate);
+                    this.uploadFacilityAttendanceA(sheetName, facilityViewId, sheetDate);
                     break;
                 }
                 
                 case 'Facility Attendance - B default': {
-                   // this.uploadFacilityAttendanceB(sheetName, facilityViewId, sheetDate);
+                    this.uploadFacilityAttendanceB(sheetName, facilityViewId, sheetDate);
                     break;
                 }
 
                 case 'Maternal Health (Ante & Post na': {
-                   // this.maternalHealthAntePostNatalCare(sheetName, facilityViewId, sheetDate);
+                    this.maternalHealthAntePostNatalCare(sheetName, facilityViewId, sheetDate);
                     break;
                 }
 
                 case 'Maternal Health(Labour and Deli': {
-                    //this.maternalHealthLabourDelivery(sheetName, facilityViewId, sheetDate);
+                    this.maternalHealthLabourDelivery(sheetName, facilityViewId, sheetDate);
                     break;                    
                 }
 
                 case 'Tetanus Toxoid ( Women of Child': {
-                  //  this.uploadTetanusToxoidWomen(sheetName, facilityViewId, sheetDate);
+                    this.uploadTetanusToxoidWomen(sheetName, facilityViewId, sheetDate);
                     break;                    
                 }
 
                 case 'Pregnancy Outcome - Live Births': {
-                   // this.uploadPregnancyOutcomeLiveBirths(sheetName, facilityViewId, sheetDate);
+                    this.uploadPregnancyOutcomeLiveBirths(sheetName, facilityViewId, sheetDate);
                     break;                    
                 }
 
                 case 'Pregnancy Outcome - Still birth': {
-                   // this.uploadPregnancyOutcomeStillBirths(sheetName, facilityViewId, sheetDate);
+                    this.uploadPregnancyOutcomeStillBirths(sheetName, facilityViewId, sheetDate);
                     break;                    
                 }
                 
                 case 'Pregnancy Outcome - Complicatio': {
-                   // this.uploadPregnancyOutcomeComplication(sheetName, facilityViewId, sheetDate);
+                    this.uploadPregnancyOutcomeComplication(sheetName, facilityViewId, sheetDate);
                     break;                    
                 } 
                 
                 case 'Immunization Immunisation(agesi': {
-                   // this.uploadImmunization(sheetName, facilityViewId, sheetDate);
+                    this.uploadImmunization(sheetName, facilityViewId, sheetDate);
                     break;                    
                 } 
 
                 case 'Nutrition Gender': {
-                    //this.uploadNutritionGender(sheetName, facilityViewId, sheetDate);
+                    this.uploadNutritionGender(sheetName, facilityViewId, sheetDate);
                     break;
                 }
 
                 case 'Malaria Prevention (LLIN) defau': {
-                    //this.uploadMalariaPrevention(sheetName, facilityViewId, sheetDate);
+                    this.uploadMalariaPrevention(sheetName, facilityViewId, sheetDate);
                     break;
                 }
 
                 case 'IMCI Gender': {
-                    //this.uploadIMCIGender(sheetName, facilityViewId, sheetDate);
+                    this.uploadIMCIGender(sheetName, facilityViewId, sheetDate);
                     break;
                 }
 
                 case 'Family Planning A Gender': {
-                    //this.uploadFamilyPlanningAGender(sheetName, facilityViewId, sheetDate);
+                    this.uploadFamilyPlanningAGender(sheetName, facilityViewId, sheetDate);
                     break;
                 }
 
                 case 'Family Planning B default': {
-                    //this.uploadFamilyPlanningBDefault(sheetName, facilityViewId, sheetDate);
+                    this.uploadFamilyPlanningBDefault(sheetName, facilityViewId, sheetDate);
                     break;
                 }
 
                 case 'Referrals default': {
-                    //this.uploadReferralsDefault(sheetName, facilityViewId, sheetDate);
+                    this.uploadReferralsDefault(sheetName, facilityViewId, sheetDate);
                     break;
                 }
 
                 case 'Non Communicable Disease Gender': {
-                    //this.uploadNonCommunicableDisease(sheetName, facilityViewId, sheetDate);
+                    this.uploadNonCommunicableDisease(sheetName, facilityViewId, sheetDate);
                     break;
                 }
 
                 case 'Sexually Transmitted Infections': {
-                    //this.uploadSexuallyTransmittedInfections(sheetName, facilityViewId, sheetDate);
+                    this.uploadSexuallyTransmittedInfections(sheetName, facilityViewId, sheetDate);
                     break;
                 }
 
                 case 'Laboratory default': {
-                    //this.uploadLaboratoryDefault(sheetName, facilityViewId, sheetDate);
+                    this.uploadLaboratoryDefault(sheetName, facilityViewId, sheetDate);
                     break;
                 }
 
                 case 'Inpatient  default': {
-                    //this.uploadInpatient(sheetName, facilityViewId, sheetDate);
+                    this.uploadInpatient(sheetName, facilityViewId, sheetDate);
                     break;
                 }
 
                 case 'Inpatient Admissions Age(Attend': {
-                    //this.uploadInpatientAdmissionsAge(sheetName, facilityViewId, sheetDate);
+                    this.uploadInpatientAdmissionsAge(sheetName, facilityViewId, sheetDate);
                     break;
                 }
 
                 case 'Pharmaceutical Service default': {
-                    //this.uploadPharmaceuticalServiceDefault(sheetName, facilityViewId, sheetDate);
+                    this.uploadPharmaceuticalServiceDefault(sheetName, facilityViewId, sheetDate);
                     break;
                 }
 
                 case 'Adverse Drug Reaction A default': {
-                    //this.uploadAdverseDrugReactionA(sheetName, facilityViewId, sheetDate);
+                    this.uploadAdverseDrugReactionA(sheetName, facilityViewId, sheetDate);
                     break;
                 }
 
                 case 'Adverse Drug Reaction B Antimal': {
-                    //this.uploadAdverseDrugReactionB(sheetName, facilityViewId, sheetDate);
+                    this.uploadAdverseDrugReactionB(sheetName, facilityViewId, sheetDate);
                     break;
                 }
 
                 case 'Mortality Age(Attendance,Admiss': {
-                    //this.uploadMortalityAge(sheetName, facilityViewId, sheetDate);
+                    this.uploadMortalityAge(sheetName, facilityViewId, sheetDate);
                     break;
                 }
 
                 case 'Maternal Mortality A default': {
-                    //this.uploadMaternalMortalityA(sheetName, facilityViewId, sheetDate);
+                    this.uploadMaternalMortalityA(sheetName, facilityViewId, sheetDate);
                     break;
                 }
 
                 case 'Maternal Mortality B Maternal D': {
-                    //this.uploadMaternalMortalityB(sheetName, facilityViewId, sheetDate);
+                    this.uploadMaternalMortalityB(sheetName, facilityViewId, sheetDate);
                     break;
                 }
 
                 case 'Neonatal Deaths Neonatal Death': {
-                    //this.uploadNeoNatalDeaths(sheetName, facilityViewId, sheetDate);
+                    this.uploadNeoNatalDeaths(sheetName, facilityViewId, sheetDate);
                     break;
                 }
 
                 case 'Under 5 Mortality  Under 5 mort': {
-                    //this.uploadUnder5Mortality(sheetName, facilityViewId, sheetDate);
+                    this.uploadUnder5Mortality(sheetName, facilityViewId, sheetDate);
                     break;
                 }
 
                 case 'HIV Counselling & Testing A Gen': {
-                    //this.uploadHIVCounsellingAndTesting(sheetName, facilityViewId, sheetDate);
+                    this.uploadHIVCounsellingAndTesting(sheetName, facilityViewId, sheetDate);
                     break;
                 }
 
                 case 'HIV Counselling & Testing B def': {
-                    //this.uploadHIVCounsellingAndTestingB(sheetName, facilityViewId, sheetDate);
+                    this.uploadHIVCounsellingAndTestingB(sheetName, facilityViewId, sheetDate);
                     break;
                 }
 
                 case 'HIV care & treatment Age (15yrs': {
-                    //this.uploadHIVCareTreatment(sheetName, facilityViewId, sheetDate);
+                    this.uploadHIVCareTreatment(sheetName, facilityViewId, sheetDate);
                     break;
                 }
 
                 case 'SRH-HIV Integration Gender': {
-                    //this.uploadSRHHIV(sheetName, facilityViewId, sheetDate);
+                    this.uploadSRHHIV(sheetName, facilityViewId, sheetDate);
                     break;
                 }
 
                 case 'TBHIV default': {
-                    //this.uploadTBHIV(sheetName, facilityViewId, sheetDate);
+                    this.uploadTBHIV(sheetName, facilityViewId, sheetDate);
                     break;
                 }
 
                 case 'PMTCT - Mother default': {
-                    //this.uploadPMTCT(sheetName, facilityViewId, sheetDate);
+                    this.uploadPMTCT(sheetName, facilityViewId, sheetDate);
                     break;
                 }
 
                 case 'PMTCT - Infant Gender': {
-                    //this.uploadPMTCTInfant(sheetName, facilityViewId, sheetDate);
+                    this.uploadPMTCTInfant(sheetName, facilityViewId, sheetDate);
                     break;
                 }
                 case 'TBLP Age(TBLP)': {
-                    //this.uploadTBLP(sheetName, facilityViewId, sheetDate);
+                    this.uploadTBLP(sheetName, facilityViewId, sheetDate);
                     break;
                 } 
 
                 case 'Malaria Testing Age(Malaria)': {
-                    //this.uploadMalariaTesting(sheetName, facilityViewId, sheetDate);
+                    this.uploadMalariaTesting(sheetName, facilityViewId, sheetDate);
                     break;
                 } 
 
                 case 'Malaria in Pregnancy default': {
-                    //this.uploadMalariaInPregnancy(sheetName, facilityViewId, sheetDate);
+                    this.uploadMalariaInPregnancy(sheetName, facilityViewId, sheetDate);
                     break;
                 } 
                 
                 case 'Malaria Cases Age(Malaria)': {
-                    //this.uploadMalariaCases(sheetName, facilityViewId, sheetDate);
+                    this.uploadMalariaCases(sheetName, facilityViewId, sheetDate);
                     break;
                 } 
 
                 case 'Malaria Treatment Age(Malaria)': {
-                    //this.uploadMalariaTreament(sheetName, facilityViewId, sheetDate);
+                    this.uploadMalariaTreament(sheetName, facilityViewId, sheetDate);
                     break;
                 }
                 
@@ -2043,10 +2043,14 @@ class DataUploader {
         var sheets = this.workbook.SheetNames;
         var extractedDate = workbook.Sheets[sheets[0]]['A3'].v.split(" ").splice(-2);
         //TEMPORARY DATE FOR TESTING, REMOVE LATER
-        extractedDate = "December,2016";
+        //extractedDate = "December,2016";
         return new Date(extractedDate.split(",")[0] + ' 1, ' + extractedDate.split(",")[1] + ' 07:00:00');
+    }
+
+    getFileInfo(fileName){
+        return fileName.split('-');
     }
 }
 
-const dataUploader = new DataUploader();
-dataUploader.uploadXlsxFile("src/DataUploader/data.xls");
+//const dataUploader = new DataUploader();
+//dataUploader.uploadXlsxFile("src/DataUploader/data.xls");
