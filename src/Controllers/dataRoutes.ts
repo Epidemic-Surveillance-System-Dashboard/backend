@@ -1,4 +1,6 @@
 import {Router, Request, Response} from 'express';
+import { DataByLocationAccess } from '../ApplicationDataAccess/dataByLocationAccess';
+import * as config from 'config';
 
 const router: Router = Router();
 
@@ -19,8 +21,17 @@ router.get('/data/location', (req: Request, res: Response) => {
     var lga = req.query.lga;
     var ward = req.query.ward;
     var facility = req.query.facility;
+    var sqlConfig = config.get('sqlConfig');
+    var dataByLocationAccess = new DataByLocationAccess(sqlConfig);    
+    var data = dataByLocationAccess.getDataByLocation(state, lga, ward, facility);
+    res.json(data);
+});
 
-    res.json({msg: "data location test"});
+router.get('/data/genericQuery', (req: Request, res: Response) => {
+    //query
+    var query = req.query.query;
+
+    res.json({msg: query});
 });
 
 router.get('/data/hierarchy', (req: Request, res: Response) => {

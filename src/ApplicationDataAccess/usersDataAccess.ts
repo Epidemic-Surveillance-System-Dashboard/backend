@@ -1,4 +1,4 @@
-import { SqlDataAccess } from './sqlDataAccess';
+import { SqlDataAccess } from '../DataAccess/sqlDataAccess';
 import * as mssql from 'mssql';
 
 export class UsersDataAccess extends SqlDataAccess{

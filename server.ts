@@ -1,6 +1,6 @@
 import * as express from 'express';
 
-import { DataRoutes } from './src/Controllers/dataRoutes';
+import { DataRoutes } from './src/controllers/dataRoutes';
 
 const app: express.Application = express();
 const port = process.env.PORT || 3000;
