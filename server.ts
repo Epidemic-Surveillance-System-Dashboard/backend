@@ -6,7 +6,7 @@ const app: express.Application = express();
 const port = process.env.PORT || 3000;
 
 //mount routes here
-app.use('/', TestRoutes);
+app.use('/api', TestRoutes);
 
 app.listen(port, () => {
     console.log(`listening at localhost:${port}`);
