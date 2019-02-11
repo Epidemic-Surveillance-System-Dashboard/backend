@@ -33,4 +33,25 @@ export class UsersDataAccess extends SqlDataAccess{
             .query('SELECT * FROM Users WHERE Email = @email;');
         });
     }
+
+    deleteUser(email: string){
+        return SqlDataAccess.sqlPool.then(pool => {
+            return pool.request()
+            .input('email', mssql.NVarChar, email)
+            .query('DELETE * FROM Users WHERE Email = @email;');
+        });
+    }
+
+    updateUser(oldEmail: string, newEmail: string, firstName: string, lastName: string, phone: string, userType: string){
+        return SqlDataAccess.sqlPool.then(pool => {
+            return pool.request()
+            .input('oldEmail', mssql.NVarChar, oldEmail)
+            .input('newEmail', mssql.NVarChar, newEmail)
+            .input('firstName', mssql.NVarChar, firstName)
+            .input('lastName', mssql.NVarChar, lastName)
+            .input('phone', mssql.NVarChar, phone)
+            .input('userType', mssql.NVarChar, userType)
+            .query('UPDATE Users SET Email = @newEmail, FirstName = @firstName, LastName = @lastName, Phone = @phone, UserType = @userType WHERE Email = @oldEmail;');
+        });
+    }
 }
