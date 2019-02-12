@@ -27,7 +27,7 @@ async function run(){
             console.log("read dir error: " + err);
         }
         else{
-            for(var i = 0; i < 1; i++){
+            for(var i = 0; i < files.length; i++){
                 if(killProcess){
                     rdyToKillProcess = true;
                     break;
@@ -40,14 +40,14 @@ async function run(){
                     batch.push(files[i]);
                     batchCount++;
                 }
-                if(i == 0 || batchCount >= maxBatch) {
+                if(i == files.length - 1 || batchCount >= maxBatch) {
                     await batchRun(batch);
                     console.log("########################UPLOAD$$$$$$$$$$$$$$$$$");
                     batch = [];
                     batchCount = 0;
                 }      
                 
-                if(i == 0){
+                if(i == files.length -1){
                     rdyToKillProcess = true;
                 }
             }

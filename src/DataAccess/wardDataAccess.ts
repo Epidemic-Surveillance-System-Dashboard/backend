@@ -12,14 +12,18 @@ export class WardDataAccess extends SqlDataAccess {
             return pool.request()
             .input('ward', mssql.NVarChar, name)
             .input('lgaId', mssql.BigInt, lgaId)
-            .query(`IF NOT EXISTS(SELECT * FROM ward WHERE Name = @ward)
+            .query(`
+            SET TRANSACTION ISOLATION LEVEL SERIALIZABLE
+            BEGIN TRAN
+            IF NOT EXISTS(SELECT * FROM ward WHERE Name = @ward)
             BEGIN
                 INSERT INTO Ward (Name, LGAId) VALUES (@ward, @lgaId) SELECT SCOPE_IDENTITY() as Id
             END
             ELSE
             BEGIN
               SELECT Id FROM ward WHERE Name = @ward
-            END`);
+            END
+            COMMIT TRAN`);
         });
     }
 

@@ -12,14 +12,17 @@ export class MetricsDataAccess extends SqlDataAccess {
             return pool.request()
             .input('name', mssql.NVarChar, name)
             .input('setId', mssql.BigInt, setId)
-            .query(`IF NOT EXISTS(SELECT * FROM Metrics WHERE MetricName = @name)
+            .query(`SET TRANSACTION ISOLATION LEVEL SERIALIZABLE
+            BEGIN TRAN
+            IF NOT EXISTS(SELECT * FROM Metrics WHERE MetricName = @name)
             BEGIN
             INSERT INTO Metrics (MetricName, SetId) VALUES (@name, @setId) SELECT SCOPE_IDENTITY() as Id;
             END
             ELSE
             BEGIN
               SELECT Id FROM Metrics WHERE MetricName = @name
-            END`);
+            END
+            COMMIT TRAN`);
         });
     }
 

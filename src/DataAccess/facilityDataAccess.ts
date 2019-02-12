@@ -12,14 +12,17 @@ export class FacilityDataAccess extends SqlDataAccess {
             return pool.request()
             .input('facility', mssql.NVarChar, name)
             .input('wardId', mssql.BigInt, wardId)
-            .query(`IF NOT EXISTS(SELECT * FROM Facility WHERE Name = @facility)
+            .query(`SET TRANSACTION ISOLATION LEVEL SERIALIZABLE
+            BEGIN TRAN
+            IF NOT EXISTS(SELECT * FROM Facility WHERE Name = @facility)
             BEGIN
                 INSERT INTO Facility (Name, WardId) VALUES (@facility, @wardId) SELECT SCOPE_IDENTITY() as Id;
             END
             ELSE
             BEGIN
               SELECT Id FROM Facility WHERE Name = @facility
-            END`);
+            END
+            COMMIT TRAN`);
         });
     }
 

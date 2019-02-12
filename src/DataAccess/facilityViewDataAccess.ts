@@ -14,14 +14,17 @@ export class FacilityViewDataAccess extends SqlDataAccess {
             .input('wardId', mssql.BigInt, wardId)
             .input('lgaId', mssql.BigInt, lgaId)
             .input('stateId', mssql.BigInt, stateId)
-            .query(`IF NOT EXISTS(SELECT * FROM FacilityView WHERE WardId = @wardId and LGAId = @lgaId and StateId = @stateId and FacilityId = @facilityId)
+            .query(`SET TRANSACTION ISOLATION LEVEL SERIALIZABLE
+            BEGIN TRAN
+            IF NOT EXISTS(SELECT * FROM FacilityView WHERE WardId = @wardId and LGAId = @lgaId and StateId = @stateId and FacilityId = @facilityId)
             BEGIN
                 INSERT INTO FacilityView (FacilityId, WardId, LGAId, StateId) VALUES (@facilityId, @wardId, @lgaId, @stateId) SELECT SCOPE_IDENTITY() as Id;
             END
             ELSE
             BEGIN
               SELECT Id FROM FacilityView WHERE WardId = @wardId and LGAId = @lgaId and StateId = @stateId and FacilityId = @facilityId
-            END`);
+            END
+            COMMIT TRAN`);
         });
     }
 
