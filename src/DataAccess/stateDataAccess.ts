@@ -20,7 +20,9 @@ export class StateDataAccess extends SqlDataAccess{
             BEGIN
               SELECT Id FROM state WHERE Name = @state
             END`);
-        });
+        }).catch((err) => {
+            console.log(err);
+        })
     }
 
     getStateId(name: string){

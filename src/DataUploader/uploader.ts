@@ -21,7 +21,8 @@ export class DataUploader {
         var sheetNameList: string[] = this.workbook.SheetNames;
         var sheetDate = this.getDateFromWorkbook(this.workbook);
         var fileInfo = this.getFileInfo(fileName);
-        var facilityViewId = await this.uploadLocation(fileInfo[0], fileInfo[1], fileInfo[2], fileInfo[3]);
+        console.log(fileInfo[0].split("/")[3]);
+        var facilityViewId = await this.uploadLocation(fileInfo[0].split("/")[2], fileInfo[1], fileInfo[2], fileInfo[3]);
         console.log("locations uploaded");
         sheetNameList.forEach((sheetName) => { 
             switch(sheetName) {
@@ -2042,9 +2043,10 @@ export class DataUploader {
     getDateFromWorkbook(workbook): Date{
         var sheets = this.workbook.SheetNames;
         var extractedDate = workbook.Sheets[sheets[0]]['A3'].v.split(" ").splice(-2);
+        console.log(extractedDate);
         //TEMPORARY DATE FOR TESTING, REMOVE LATER
         //extractedDate = "December,2016";
-        return new Date(extractedDate.split(",")[0] + ' 1, ' + extractedDate.split(",")[1] + ' 07:00:00');
+        return new Date(extractedDate[0] + ' 1, ' + extractedDate[1] + ' 07:00:00');
     }
 
     getFileInfo(fileName){
