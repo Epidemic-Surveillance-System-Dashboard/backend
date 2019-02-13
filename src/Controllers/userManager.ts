@@ -42,5 +42,16 @@ export class UserManager {
         }
     }
 
+    public async updateUser(oldEmail: string, newEmail: string, firstName: string, lastName: string, phone: string, userType: string){
+        var userDataAccess = new UsersDataAccess(config.get('sqlConfig'));
+        var result = await userDataAccess.updateUser(oldEmail, newEmail, firstName, lastName, phone, userType);
+        if(result.rowsAffected[0] > 0){
+            return {"result": "update success"};
+        }
+        else {
+            return {"result": "user does not exist"};
+        }
+    }
+
 
 }

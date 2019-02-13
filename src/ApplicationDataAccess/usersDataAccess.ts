@@ -78,7 +78,7 @@ export class UsersDataAccess extends SqlDataAccess{
             .input('lastName', mssql.NVarChar, lastName)
             .input('phone', mssql.NVarChar, phone)
             .input('userType', mssql.NVarChar, userType)
-            .input('dateUpdated', mssql.NVarChar, new Date())
+            .input('dateUpdated', mssql.DateTime, new Date())
             .query('UPDATE Users SET Email = @newEmail, FirstName = @firstName, LastName = @lastName, Phone = @phone, UserType = @userType, DateUpdated = @dateUpdated WHERE Email = @oldEmail;');
         });
     }
