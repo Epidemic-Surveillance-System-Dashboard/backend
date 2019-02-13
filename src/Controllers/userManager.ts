@@ -7,9 +7,15 @@ export class UserManager {
 
     }
 
-    public getUserById(userId: number){
+    public async getUserById(userId: number){
         var userDataAccess = new UsersDataAccess(config.get('sqlConfig'));
-        return userDataAccess.getUserById(userId);
+        var result = await userDataAccess.getUserById(userId);
+        if(result.rowsAffected > 0){
+            return {"user": result.recordsets[0][0]};
+        }
+        else {
+            return {"error": "user does not exist"};
+        }
     }
 
     public async getAllUsers(userId: number){

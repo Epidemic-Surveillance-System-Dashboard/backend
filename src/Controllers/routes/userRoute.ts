@@ -1,5 +1,5 @@
 import { Router, Request, Response } from 'express';
-import { UserManager } from './userManager';
+import { UserManager } from '../userManager';
 
 const router: Router = Router();
 
@@ -12,8 +12,10 @@ router.get('/:userId', (req: Request, res: Response) => {
     }
 
     var userManager = new UserManager();
-    var user = userManager.getUserById(userId);
-    res.json({user});
+    userManager.getUserById(userId).then((user) => {
+        res.json(user);
+    });
+    
 });
 
 router.get('/getAllUsers/:userId', async (req: Request, res: Response) => {
