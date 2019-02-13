@@ -26,11 +26,28 @@ export class UsersDataAccess extends SqlDataAccess{
         });
     }
 
-    getUser(email: string){
+    getUserByEmail(email: string){
         return SqlDataAccess.sqlPool.then(pool => {
             return pool.request()
             .input('email', mssql.NVarChar, email)
             .query('SELECT * FROM Users WHERE Email = @email;');
+        });
+    }
+
+    getUserById(userId: number){
+        return SqlDataAccess.sqlPool.then(pool => {
+            return pool.request()
+            .input('userId', mssql.BigInt, userId)
+            .query('SELECT * FROM Users WHERE Id = @userId;');
+        });
+    }
+
+    //need to add filter logic later
+    getAllUsers(userId: number){
+        return SqlDataAccess.sqlPool.then(pool => {
+            return pool.request()
+            //.input('userId', mssql.BigInt, userId)
+            .query('SELECT * FROM Users');
         });
     }
 

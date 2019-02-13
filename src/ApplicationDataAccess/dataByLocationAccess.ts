@@ -14,5 +14,4 @@ export class DataByLocationAccess extends SqlDataAccess {
             .query('SELECT Id FROM LGA WHERE Name = @lga;');
         });
     }
-
 }
