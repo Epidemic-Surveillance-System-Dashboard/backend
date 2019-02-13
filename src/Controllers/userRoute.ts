@@ -32,9 +32,7 @@ router.get('/getAllUsers/:userId', async (req: Request, res: Response) => {
 
 router.post('/addUser', (req: Request, res: Response) => {
     var body = req.body;
-    console.log("addUser POST request");
     if(body.firstName && body.lastName && body.phone && body.email && body.userType){
-        console.log("data valid");
         var userManager = new UserManager();
         userManager.addUser(body.email, body.firstName, body.lastName, body.phone, body.userType).then((result) => {
             res.json(result);
