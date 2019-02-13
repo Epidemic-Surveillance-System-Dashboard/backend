@@ -43,4 +43,18 @@ router.post('/addUser', (req: Request, res: Response) => {
     }
 });
 
+router.delete('/deleteUser/:userId', (req: Request, res: Response) => {
+    var userId = req.params.userId;
+    if(!userId){
+        res.json({
+            "error": "invalid or empty userId"
+        });
+    }
+    
+    var userManager = new UserManager();
+    var result = userManager.deleteUserById(userId).then((result) => {
+        res.json(result);
+    });
+});
+
 export const UserRoutes: Router = router;

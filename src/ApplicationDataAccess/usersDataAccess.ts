@@ -53,11 +53,19 @@ export class UsersDataAccess extends SqlDataAccess{
         });
     }
 
-    deleteUser(email: string){
+    deleteUserByEmail(email: string){
         return SqlDataAccess.sqlPool.then(pool => {
             return pool.request()
             .input('email', mssql.NVarChar, email)
             .query('DELETE * FROM Users WHERE Email = @email;');
+        });
+    }
+
+    deleteUserById(userId: number){
+        return SqlDataAccess.sqlPool.then(pool => {
+            return pool.request()
+            .input('userId', mssql.BigInt, userId)
+            .query('DELETE FROM Users WHERE Id = @userId;');
         });
     }
 
