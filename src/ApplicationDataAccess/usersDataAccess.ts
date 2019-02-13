@@ -15,9 +15,11 @@ export class UsersDataAccess extends SqlDataAccess{
             .input('lastName', mssql.NVarChar, lastName)
             .input('phone', mssql.NVarChar, phone)
             .input('userType', mssql.NVarChar, userType)
-            .query(`IF NOT EXISTS(SELECT * FROM Users WHERE Name = @email)
+            .input('dateCreated', mssql.DateTime, new Date())
+            .input('dateUpdated', mssql.DateTime, new Date())
+            .query(`IF NOT EXISTS(SELECT * FROM Users WHERE Email = @email)
             BEGIN
-              insert into Users (Email, FirstName, LastName, Phone, UserType) VALUES (@email, @firstName, @lastName, @phone, @userType) select SCOPE_IDENTITY() as Id
+              insert into Users (Email, FirstName, LastName, Phone, UserType, DateCreated, DateUpdated) VALUES (@email, @firstName, @lastName, @phone, @userType, @dateCreated, @dateUpdated) select SCOPE_IDENTITY() as Id
             END
             ELSE
             BEGIN
@@ -68,7 +70,8 @@ export class UsersDataAccess extends SqlDataAccess{
             .input('lastName', mssql.NVarChar, lastName)
             .input('phone', mssql.NVarChar, phone)
             .input('userType', mssql.NVarChar, userType)
-            .query('UPDATE Users SET Email = @newEmail, FirstName = @firstName, LastName = @lastName, Phone = @phone, UserType = @userType WHERE Email = @oldEmail;');
+            .input('dateUpdated', mssql.NVarChar, new Date())
+            .query('UPDATE Users SET Email = @newEmail, FirstName = @firstName, LastName = @lastName, Phone = @phone, UserType = @userType, DateUpdated = @dateUpdated WHERE Email = @oldEmail;');
         });
     }
 }
