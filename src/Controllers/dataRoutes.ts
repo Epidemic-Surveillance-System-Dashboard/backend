@@ -22,16 +22,22 @@ router.get('/data/location', (req: Request, res: Response) => {
     var ward = req.query.ward;
     var facility = req.query.facility;
     var sqlConfig = config.get('sqlConfig');
-    var dataByLocationAccess = new DataByLocationAccess(sqlConfig);    
-    var data = dataByLocationAccess.getDataByLocation(state, lga, ward, facility);
-    res.json(data);
-});
-
-router.get('/data/genericQuery', (req: Request, res: Response) => {
-    //query
-    var query = req.query.query;
-
-    res.json({msg: query});
+    var dataByLocationAccess = new DataByLocationAccess(sqlConfig); 
+    
+    var data = dataByLocationAccess.getDataByLocation(state, lga, ward, facility).then(result=>{
+        if (result != null) {
+            var jsonObj = {
+                Data: result.recordsets[0],
+                Sets: result.recordsets[1],
+                Groups: result.recordsets[2],
+                Metrics: result.recordsets[3]
+            };
+            res.json(jsonObj);
+        } else {
+            res.status(400);
+            res.send("Bad Request");
+        }
+    });    
 });
 
 router.get('/data/hierarchy', (req: Request, res: Response) => {
