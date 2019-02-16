@@ -51,7 +51,23 @@ router.get('/data/location', (req: Request, res: Response) => {
 });
 
 router.get('/data/hierarchy', (req: Request, res: Response) => {
-    res.json({msg: "data hierarchy test"});
+    var sqlConfig = config.get('sqlConfig');
+    var hierarchyAccess = new HierarchyAccess(sqlConfig); 
+    
+    var data = hierarchyAccess.getAllDataHierarchy().then(result=>{
+        if (result != null) {
+            
+            var jsonObj = {
+                Groups: result.recordsets[0],
+                Sets: result.recordsets[1],
+                Metrics: result.recordsets[2]
+            }
+            res.json(jsonObj);
+        } else {
+            res.status(400);
+            res.send("Bad Request");
+        }
+    }); 
 });
 
 export const DataRoutes: Router = router;

@@ -20,4 +20,15 @@ export class HierarchyAccess extends SqlDataAccess {
         });
     }
 
+    getAllDataHierarchy() {
+        return SqlDataAccess.sqlPool.then(pool => {
+            return pool.request()
+            .query(
+                `SELECT GroupName, Id From Groups;
+                SELECT "Sets".SetName, "Sets".Id AS SetId, Groups.GroupName FROM "Sets" INNER JOIN Groups ON "Sets".GroupId = Groups.Id;
+                SELECT Metrics.MetricName, Metrics.Id AS MetricId, "Sets".SetName FROM Metrics INNER JOIN "Sets" ON Metrics.SetId = "Sets".Id;`
+            );            
+        });
+    }
+
 }
