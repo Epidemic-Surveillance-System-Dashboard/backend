@@ -69,17 +69,17 @@ export class UsersDataAccess extends SqlDataAccess{
         });
     }
 
-    updateUser(oldEmail: string, newEmail: string, firstName: string, lastName: string, phone: string, userType: string){
+    updateUser(id: number, email: string, firstName: string, lastName: string, phone: string, userType: string){
         return SqlDataAccess.sqlPool.then(pool => {
             return pool.request()
-            .input('oldEmail', mssql.NVarChar, oldEmail)
-            .input('newEmail', mssql.NVarChar, newEmail)
+            .input('id', mssql.BigInt, id)
+            .input('email', mssql.NVarChar, email)
             .input('firstName', mssql.NVarChar, firstName)
             .input('lastName', mssql.NVarChar, lastName)
             .input('phone', mssql.NVarChar, phone)
             .input('userType', mssql.NVarChar, userType)
             .input('dateUpdated', mssql.DateTime, new Date())
-            .query('UPDATE Users SET Email = @newEmail, FirstName = @firstName, LastName = @lastName, Phone = @phone, UserType = @userType, DateUpdated = @dateUpdated WHERE Email = @oldEmail;');
+            .query('UPDATE Users SET Email = @email, FirstName = @firstName, LastName = @lastName, Phone = @phone, UserType = @userType, DateUpdated = @dateUpdated WHERE Id = @id;');
         });
     }
 }

@@ -33,10 +33,12 @@ router.get('/getAllUsers/:userId', async (req: Request, res: Response) => {
 });
 
 router.post('/addUser', (req: Request, res: Response) => {
+    console.log("here111");
     var body = req.body;
-    if(body.firstName && body.lastName && body.phone && body.email && body.userType){
+    if(body.FirstName && body.LastName && body.Phone && body.Email && body.UserType){
+        console.log("hjere0");
         var userManager = new UserManager();
-        userManager.addUser(body.email, body.firstName, body.lastName, body.phone, body.userType).then((result) => {
+        userManager.addUser(body.Email, body.FirstName, body.LastName, body.Phone, body.UserType).then((result) => {
             res.json(result);
         });
     }
@@ -62,9 +64,9 @@ router.delete('/deleteUser/:userId', (req: Request, res: Response) => {
 router.put('/updateUser', (req: Request, res: Response) => {
     var body = req.body;
     console.log("in updateUser");
-    if(body.firstName && body.lastName && body.phone && body.newEmail && body.userType && body.oldEmail){
+    if(body.FirstName && body.LastName && body.Phone && body.Email && body.UserType && body.Id){
         var userManager = new UserManager();
-        userManager.updateUser(body.oldEmail, body.newEmail, body.firstName, body.lastName, body.phone, body.userType).then((result) => {
+        userManager.updateUser(body.Id, body.Email, body.FirstName, body.LastName, body.Phone, body.UserType).then((result) => {
             res.json(result);
         });
     }

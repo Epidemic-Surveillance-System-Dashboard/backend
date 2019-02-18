@@ -27,7 +27,7 @@ export class UserManager {
     public async addUser(email: string, firstName: string, lastName: string, phone: string, userType: string){
         var userDataAccess = new UsersDataAccess(config.get('sqlConfig'));
         var user = await userDataAccess.getUserByEmail(email);
-
+        console.log("here");
         if(user.recordsets[0].length == 0){
             var result = await userDataAccess.insertUser(email, firstName, lastName, phone, userType);
             return result.recordsets[0];
@@ -48,9 +48,9 @@ export class UserManager {
         }
     }
 
-    public async updateUser(oldEmail: string, newEmail: string, firstName: string, lastName: string, phone: string, userType: string){
+    public async updateUser(id: number, email: string, firstName: string, lastName: string, phone: string, userType: string){
         var userDataAccess = new UsersDataAccess(config.get('sqlConfig'));
-        var result = await userDataAccess.updateUser(oldEmail, newEmail, firstName, lastName, phone, userType);
+        var result = await userDataAccess.updateUser(id, email, firstName, lastName, phone, userType);
         if(result.rowsAffected[0] > 0){
             return {"result": "update success"};
         }
