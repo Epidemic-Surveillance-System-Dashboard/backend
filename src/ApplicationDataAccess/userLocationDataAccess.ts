@@ -44,16 +44,42 @@ export class UserLocationDataAccess extends SqlDataAccess{
     }
 
 
-    public getAllChildLocationIds(locationId: number){
-        console.log(locationId);
-        return SqlDataAccess.sqlPool.then((pool) => {
-            return pool.request()
-            .input('locationId', mssql.BigInt, locationId)
-            .query(`SELECT l.Id AS LGAId, w.Id AS WardId, f.Id AS FacilityId FROM (
-            (SELECT * FROM LGA l WHERE l.StateId = @locationId) AS l
-            JOIN Ward w ON l.Id = w.LGAId 
-            JOIN Facility f ON w.Id = f.WardId);`);
-        });
+    public getAllChildLocationIds(locationId: number, locationType: string){
+        if(locationType.toLowerCase() == 'state'){
+            return SqlDataAccess.sqlPool.then((pool) => {
+                return pool.request()
+                .input('locationId', mssql.BigInt, locationId)
+                .query(`SELECT l.Id AS LGAId, w.Id AS WardId, f.Id AS FacilityId FROM (
+                (SELECT * FROM LGA l WHERE l.StateId = @locationId) AS l
+                LEFT JOIN Ward w ON l.Id = w.LGAId 
+                LEFT JOIN Facility f ON w.Id = f.WardId);`);
+            });
+        }
+        else if(locationType.toLowerCase() == 'lga'){
+            console.log("lga here");
+            return SqlDataAccess.sqlPool.then((pool) => {
+                return pool.request()
+                .input('locationId', mssql.BigInt, locationId)
+                .query(`SELECT w.Id AS WardId, f.Id AS FacilityId FROM (
+                    (SELECT * FROM Ward w WHERE w.LGAId = @locationId) AS w
+                    LEFT JOIN Facility f ON w.Id = f.WardId);`);
+            });
+        }
+        else if(locationType.toLowerCase() == 'ward'){
+            console.log("ward here");
+            return SqlDataAccess.sqlPool.then((pool) => {
+                return pool.request()
+                .input('locationId', mssql.BigInt, locationId)
+                .query(`SELECT Id as FacilityId FROM Facility WHERE WardId = @locationId;`);
+            });
+        }
+        else if(locationType.toLowerCase() == 'facility'){
+            return SqlDataAccess.sqlPool.then((pool) => {
+                return pool.request()
+                .input('locationId', mssql.BigInt, locationId)
+                .query(`SELECT Id as FacilityId FROM Facility WHERE WardId = @locationId;`);
+            });
+        }
     }
 
     public getUserIdsFromLocationIds(locationIds){
@@ -63,7 +89,9 @@ export class UserLocationDataAccess extends SqlDataAccess{
             var lgaIdsInQuery = this.parameterizeInQuery(request, 'LocationId', locationIds.lgaIds, mssql.BigInt, 'lgaId');
             var wardIdsInQuery = this.parameterizeInQuery(request, 'LocationId', locationIds.wardIds, mssql.BigInt, 'wardId');
             var facilityIdsInQuery = this.parameterizeInQuery(request, 'LocationId', locationIds.facilityIds, mssql.BigInt, 'facilityId');
-
+            console.log(`SELECT UserId FROM UserLocation WHERE (${lgaIdsInQuery} AND LocationType = 'LGA') OR
+            (${wardIdsInQuery} AND LocationType = 'Ward') OR 
+            (${facilityIdsInQuery} AND LocationType = 'Facility');`);
             return request
             .query(`SELECT UserId FROM UserLocation WHERE (${lgaIdsInQuery} AND LocationType = 'LGA') OR
              (${wardIdsInQuery} AND LocationType = 'Ward') OR 

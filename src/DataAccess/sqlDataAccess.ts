@@ -13,6 +13,7 @@ export class SqlDataAccess {
 
     protected parameterizeInQuery(request, columnName, values, type, paramterNamePrefix){
         var parameterNames = [];
+        parameterNames.push(-1);
         for (var i = 0; i < values.length; i++) {
             var parameterName = paramterNamePrefix + i;
             request.input(parameterName, type, values[i]);

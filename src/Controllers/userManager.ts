@@ -25,20 +25,16 @@ export class UserManager {
 
         var userLocationResult = await userLocationDataAccess.getUserLocation(userId);
         var userLocation = userLocationResult.recordsets[0][0];
-        console.log(userLocation);
 
-        if(userLocation.LocationType.toLowerCase() === 'state'){
-            console.log("here");
-            var childLocationIdsResult = await userLocationDataAccess.getAllChildLocationIds(parseInt(userLocation.LocationId));
-            var childLocationIds = this.parseChildLocationIds(childLocationIdsResult.recordsets[0]);
-            var userIdsResult = await userLocationDataAccess.getUserIdsFromLocationIds(childLocationIds);
-            var users = await userDataAccess.getUsersById(this.convertUserIdsToIntArray(userIdsResult.recordsets[0]));
-            console.log(users);
-            return users.recordsets[0];
+        if(userLocation.LocationType.toLowerCase() == 'facility'){
+            return {"error": "user is a facility level user"};
         }
 
-        var result = await userDataAccess.getAllUsers(userId);
-        return result.recordsets[0];
+        var childLocationIdsResult = await userLocationDataAccess.getAllChildLocationIds(parseInt(userLocation.LocationId), userLocation.LocationType);
+        var childLocationIds = this.parseChildLocationIds(childLocationIdsResult.recordsets[0]);
+        var userIdsResult = await userLocationDataAccess.getUserIdsFromLocationIds(childLocationIds);
+        var users = await userDataAccess.getUsersById(this.convertUserIdsToIntArray(userIdsResult.recordsets[0]));
+        return users.recordsets[0];
     }
 
     public async addUser(email: string, firstName: string, lastName: string, phone: string, 
