@@ -56,15 +56,6 @@ export class UsersDataAccess extends SqlDataAccess{
         });
     }
 
-    //need to add filter logic later
-    getAllUsers(userId: number){
-        return SqlDataAccess.sqlPool.then(pool => {
-            return pool.request()
-            //.input('userId', mssql.BigInt, userId)
-            .query('SELECT * FROM Users');
-        });
-    }
-
     deleteUserByEmail(email: string){
         return SqlDataAccess.sqlPool.then(pool => {
             return pool.request()

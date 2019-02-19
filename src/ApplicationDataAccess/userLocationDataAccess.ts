@@ -56,7 +56,6 @@ export class UserLocationDataAccess extends SqlDataAccess{
             });
         }
         else if(locationType.toLowerCase() == 'lga'){
-            console.log("lga here");
             return SqlDataAccess.sqlPool.then((pool) => {
                 return pool.request()
                 .input('locationId', mssql.BigInt, locationId)
@@ -66,7 +65,6 @@ export class UserLocationDataAccess extends SqlDataAccess{
             });
         }
         else if(locationType.toLowerCase() == 'ward'){
-            console.log("ward here");
             return SqlDataAccess.sqlPool.then((pool) => {
                 return pool.request()
                 .input('locationId', mssql.BigInt, locationId)
@@ -85,17 +83,14 @@ export class UserLocationDataAccess extends SqlDataAccess{
     public getUserIdsFromLocationIds(locationIds){
         return SqlDataAccess.sqlPool.then((pool) => {     
             var request = pool.request();
-            console.log(locationIds);
             var lgaIdsInQuery = this.parameterizeInQuery(request, 'LocationId', locationIds.lgaIds, mssql.BigInt, 'lgaId');
             var wardIdsInQuery = this.parameterizeInQuery(request, 'LocationId', locationIds.wardIds, mssql.BigInt, 'wardId');
             var facilityIdsInQuery = this.parameterizeInQuery(request, 'LocationId', locationIds.facilityIds, mssql.BigInt, 'facilityId');
-            console.log(`SELECT UserId FROM UserLocation WHERE (${lgaIdsInQuery} AND LocationType = 'LGA') OR
-            (${wardIdsInQuery} AND LocationType = 'Ward') OR 
-            (${facilityIdsInQuery} AND LocationType = 'Facility');`);
+            
             return request
-            .query(`SELECT UserId FROM UserLocation WHERE (${lgaIdsInQuery} AND LocationType = 'LGA') OR
-             (${wardIdsInQuery} AND LocationType = 'Ward') OR 
-             (${facilityIdsInQuery} AND LocationType = 'Facility');`);
+                .query(`SELECT UserId FROM UserLocation WHERE (${lgaIdsInQuery} AND LocationType = 'LGA') OR 
+                (${wardIdsInQuery} AND LocationType = 'Ward') OR 
+                (${facilityIdsInQuery} AND LocationType = 'Facility');`);
         });
     }
 }

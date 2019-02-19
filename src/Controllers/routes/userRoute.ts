@@ -27,7 +27,7 @@ router.get('/getAllUsers/:userId', async (req: Request, res: Response) => {
 
     var userManager = new UserManager();
     userManager.getAllUsers(userId).then((users) => {
-        res.json({users});
+        res.json(users);
     });
 });
 
