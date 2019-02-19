@@ -33,8 +33,9 @@ router.get('/getAllUsers/:userId', async (req: Request, res: Response) => {
 
 router.post('/addUser', (req: Request, res: Response) => {
     var body = req.body;
+
     if(body.FirstName && body.LastName && body.Phone && body.Email && 
-        body.UserType, body.LocationId, body.LocationType){
+        body.UserType && body.LocationId && body.LocationType){
         var userManager = new UserManager();
         userManager.addUser(body.Email, body.FirstName, body.LastName, body.Phone, body.UserType, 
             body.LocationId, body.LocationType).then((result) => {
@@ -42,6 +43,7 @@ router.post('/addUser', (req: Request, res: Response) => {
         });
     }
     else{
+        res.status(400);
         res.json({"error": "invalid data"});
     }
 });
