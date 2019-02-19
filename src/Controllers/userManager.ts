@@ -33,8 +33,8 @@ export class UserManager {
 
         if(user.recordsets[0].length == 0){
             var result = await userDataAccess.insertUser(email, firstName, lastName, phone, userType);
-            await userLocationDataAccess.insertUserLocation(email, locationId, locationType);
-            return result.recordsets[0];
+            await userLocationDataAccess.insertUserLocation(email, locationId, locationType, result.recordsets[0][0].Id);
+            return result.recordsets[0][0];
         }
         else{
             return {"error": "user already exists"};

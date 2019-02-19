@@ -7,15 +7,16 @@ export class UserLocationDataAccess extends SqlDataAccess{
         super(config);
     }
 
-    insertUserLocation(email: string, locationId: number, locationType: string){
+    insertUserLocation(email: string, locationId: number, locationType: string, userId: number){
         return SqlDataAccess.sqlPool.then((pool) => {
             return pool.request()
             .input('email', mssql.NVarChar, email)
             .input('locationId', mssql.BigInt, locationId)
             .input('locationType', mssql.NVarChar, locationType)
+            .input('userId', mssql.BigInt, userId)
             .query(`IF NOT EXISTS(SELECT * FROM UserLocation WHERE Email = @email)
             BEGIN
-              INSERT INTO UserLocation (Email, LocationId, LocationType) VALUES (@email, @locationId, @locationType) select SCOPE_IDENTITY() as Id
+              INSERT INTO UserLocation (Email, LocationId, LocationType, UserId) VALUES (@email, @locationId, @locationType, @userId) select SCOPE_IDENTITY() as Id
             END
             ELSE
             BEGIN
