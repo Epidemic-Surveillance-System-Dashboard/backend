@@ -1,4 +1,5 @@
 import { UsersDataAccess } from '../ApplicationDataAccess/usersDataAccess';
+import { UserLocationDataAccess } from '../ApplicationDataAccess/userLocationDataAccess';
 import * as config from 'config';
 
 export class UserManager {
@@ -24,12 +25,15 @@ export class UserManager {
         return result.recordsets[0];
     }
 
-    public async addUser(email: string, firstName: string, lastName: string, phone: string, userType: string){
+    public async addUser(email: string, firstName: string, lastName: string, phone: string, 
+        userType: string, locationId: number, locationType: string){
         var userDataAccess = new UsersDataAccess(config.get('sqlConfig'));
+        var userLocationDataAccess = new UserLocationDataAccess(config.get('sqlConfig'));
         var user = await userDataAccess.getUserByEmail(email);
-        console.log("here");
+
         if(user.recordsets[0].length == 0){
             var result = await userDataAccess.insertUser(email, firstName, lastName, phone, userType);
+            await userLocationDataAccess.insertUserLocation(email, locationId, locationType);
             return result.recordsets[0];
         }
         else{
