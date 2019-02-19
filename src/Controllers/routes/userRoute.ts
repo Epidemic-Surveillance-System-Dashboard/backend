@@ -15,7 +15,6 @@ router.get('/:userId', (req: Request, res: Response) => {
     userManager.getUserById(userId).then((user) => {
         res.json(user);
     });
-    
 });
 
 router.get('/getAllUsers/:userId', async (req: Request, res: Response) => {

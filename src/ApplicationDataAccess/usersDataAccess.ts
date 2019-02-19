@@ -40,7 +40,8 @@ export class UsersDataAccess extends SqlDataAccess{
         return SqlDataAccess.sqlPool.then(pool => {
             return pool.request()
             .input('userId', mssql.BigInt, userId)
-            .query('SELECT * FROM Users WHERE Id = @userId;');
+            .query(`SELECT u.Id, u.Email, u.FirstName, u.LastName, u.Phone, u.UserType, ul.LocationId, ul.LocationType, u.DateCreated, u.DateUpdated FROM 
+            (SELECT * FROM Users WHERE Id = @userId) AS u LEFT JOIN UserLocation ul on u.Id = ul.UserId;`);
         });
     }
 
@@ -48,9 +49,10 @@ export class UsersDataAccess extends SqlDataAccess{
         return SqlDataAccess.sqlPool.then(pool => {
             var request = pool.request();
             var idInQuery = this.parameterizeInQuery(request, 'Id', userIds, mssql.BigInt, 'id');
-            
+
             return request
-            .query(`SELECT * FROM Users WHERE ${idInQuery}`);
+            .query(`SELECT u.Id, u.Email, u.FirstName, u.LastName, u.Phone, u.UserType, ul.LocationId, ul.LocationType, u.DateCreated, u.DateUpdated FROM
+            (SELECT * FROM Users WHERE ${idInQuery}) AS u LEFT JOIN UserLocation ul ON u.Id = ul.UserId;`);
         });
     }
 
