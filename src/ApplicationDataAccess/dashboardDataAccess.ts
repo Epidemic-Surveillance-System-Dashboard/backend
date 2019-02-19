@@ -36,7 +36,7 @@ export class DashboardDataAccess extends SqlDataAccess{
         return SqlDataAccess.sqlPool.then(pool => {
             return pool.request()
             .input('userId', mssql.BigInt, userId)
-            .input('dashboardJson', mssql.BigInt, dashboardJson)
+            .input('dashboardJson', mssql.NVarChar, dashboardJson)
             .query('UPDATE Dashboard SET DashboardJson = @dashboardJson WHERE UserId = @userId;');
         });
     }

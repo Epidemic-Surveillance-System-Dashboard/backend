@@ -6,9 +6,7 @@ const router: Router = Router();
 router.get('/:userId', (req: Request, res: Response) => {
     var userId = req.params.userId;
     if(!userId){
-        res.json({
-            "error": "invalid or empty userId"
-        });
+        res.json({"error": "invalid or empty userId"});
     }
 
     var userManager = new UserManager();
