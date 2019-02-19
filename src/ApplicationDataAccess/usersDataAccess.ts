@@ -44,6 +44,16 @@ export class UsersDataAccess extends SqlDataAccess{
         });
     }
 
+    getUsersById(userIds){
+        return SqlDataAccess.sqlPool.then(pool => {
+            var request = pool.request();
+            var idInQuery = this.parameterizeInQuery(request, 'Id', userIds, mssql.BigInt, 'id');
+            
+            return request
+            .query(`SELECT * FROM Users WHERE ${idInQuery}`);
+        });
+    }
+
     //need to add filter logic later
     getAllUsers(userId: number){
         return SqlDataAccess.sqlPool.then(pool => {

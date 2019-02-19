@@ -10,4 +10,14 @@ export class SqlDataAccess {
 
         }
     }
+
+    protected parameterizeInQuery(request, columnName, values, type, paramterNamePrefix){
+        var parameterNames = [];
+        for (var i = 0; i < values.length; i++) {
+            var parameterName = paramterNamePrefix + i;
+            request.input(parameterName, type, values[i]);
+            parameterNames.push(`@${parameterName}`);
+        }
+        return `${columnName} IN (${parameterNames.join(',')})`;
+    }
 }

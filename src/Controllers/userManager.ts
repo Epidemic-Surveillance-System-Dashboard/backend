@@ -21,6 +21,22 @@ export class UserManager {
 
     public async getAllUsers(userId: number){
         var userDataAccess = new UsersDataAccess(config.get('sqlConfig'));
+        var userLocationDataAccess = new UserLocationDataAccess(config.get('sqlConfig'));
+
+        var userLocationResult = await userLocationDataAccess.getUserLocation(userId);
+        var userLocation = userLocationResult.recordsets[0][0];
+        console.log(userLocation);
+
+        if(userLocation.LocationType.toLowerCase() === 'state'){
+            console.log("here");
+            var childLocationIdsResult = await userLocationDataAccess.getAllChildLocationIds(parseInt(userLocation.LocationId));
+            var childLocationIds = this.parseChildLocationIds(childLocationIdsResult.recordsets[0]);
+            var userIdsResult = await userLocationDataAccess.getUserIdsFromLocationIds(childLocationIds);
+            var users = await userDataAccess.getUsersById(this.convertUserIdsToIntArray(userIdsResult.recordsets[0]));
+            console.log(users);
+            return users.recordsets[0];
+        }
+
         var result = await userDataAccess.getAllUsers(userId);
         return result.recordsets[0];
     }
@@ -61,6 +77,41 @@ export class UserManager {
         else {
             return {"result": "user does not exist"};
         }
+    }
+
+    private parseChildLocationIds(rawChildLocationIds){
+        var lgaIds = [];
+        var wardIds = [];
+        var facilityIds = [];
+
+        for(var i = 0; i < rawChildLocationIds.length; i++){
+            var lgaId = parseInt(rawChildLocationIds[i].LGAId);
+            var wardId = parseInt(rawChildLocationIds[i].WardId);
+            var facilityId = parseInt(rawChildLocationIds[i].FacilityId);
+            if(rawChildLocationIds[i].LGAId && !lgaIds.includes(lgaId)){
+                lgaIds.push(lgaId);
+            }
+            if(rawChildLocationIds[i].WardId && !wardIds.includes(wardId)){
+                wardIds.push(wardId);
+            }
+            if(rawChildLocationIds[i].FacilityId && !facilityIds.includes(facilityId)){
+                facilityIds.push(facilityId);
+            }
+        }
+
+        return  {
+            lgaIds,
+            wardIds,
+            facilityIds
+        };
+    }
+
+    private convertUserIdsToIntArray(userIds){
+        var ids = [];
+        for(var i = 0; i < userIds.length; i++){
+            ids.push(parseInt(userIds[i].UserId));
+        }
+        return ids;
     }
 
 

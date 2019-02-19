@@ -7,7 +7,7 @@ export class UserLocationDataAccess extends SqlDataAccess{
         super(config);
     }
 
-    insertUserLocation(email: string, locationId: number, locationType: string, userId: number){
+    public insertUserLocation(email: string, locationId: number, locationType: string, userId: number){
         return SqlDataAccess.sqlPool.then((pool) => {
             return pool.request()
             .input('email', mssql.NVarChar, email)
@@ -25,7 +25,7 @@ export class UserLocationDataAccess extends SqlDataAccess{
         });
     }
 
-    getUserLocation(userId: number){
+    public getUserLocation(userId: number){
         return SqlDataAccess.sqlPool.then(pool => {
             return pool.request()
             .input('userId', mssql.BigInt, userId)
@@ -33,13 +33,41 @@ export class UserLocationDataAccess extends SqlDataAccess{
         });
     }
 
-    updateUserLocation(userId: number, locationId: number, locationType: string){
+    public updateUserLocation(userId: number, locationId: number, locationType: string){
         return SqlDataAccess.sqlPool.then(pool => {
             return pool.request()
             .input('userId', mssql.BigInt, userId)
             .input('locationId', mssql.BigInt, locationId)
             .input('locationType', mssql.NVarChar, locationType)
             .query('UPDATE UserLocation SET LocationId = @locationId, LocationType = @locationType WHERE UserId = @userId;');
+        });
+    }
+
+
+    public getAllChildLocationIds(locationId: number){
+        console.log(locationId);
+        return SqlDataAccess.sqlPool.then((pool) => {
+            return pool.request()
+            .input('locationId', mssql.BigInt, locationId)
+            .query(`SELECT l.Id AS LGAId, w.Id AS WardId, f.Id AS FacilityId FROM (
+            (SELECT * FROM LGA l WHERE l.StateId = @locationId) AS l
+            JOIN Ward w ON l.Id = w.LGAId 
+            JOIN Facility f ON w.Id = f.WardId);`);
+        });
+    }
+
+    public getUserIdsFromLocationIds(locationIds){
+        return SqlDataAccess.sqlPool.then((pool) => {     
+            var request = pool.request();
+            console.log(locationIds);
+            var lgaIdsInQuery = this.parameterizeInQuery(request, 'LocationId', locationIds.lgaIds, mssql.BigInt, 'lgaId');
+            var wardIdsInQuery = this.parameterizeInQuery(request, 'LocationId', locationIds.wardIds, mssql.BigInt, 'wardId');
+            var facilityIdsInQuery = this.parameterizeInQuery(request, 'LocationId', locationIds.facilityIds, mssql.BigInt, 'facilityId');
+
+            return request
+            .query(`SELECT UserId FROM UserLocation WHERE (${lgaIdsInQuery} AND LocationType = 'LGA') OR
+             (${wardIdsInQuery} AND LocationType = 'Ward') OR 
+             (${facilityIdsInQuery} AND LocationType = 'Facility');`);
         });
     }
 }
