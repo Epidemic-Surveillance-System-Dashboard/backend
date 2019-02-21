@@ -14,7 +14,10 @@ export class DataDataAccess extends SqlDataAccess {
             .input('facilityViewId', mssql.BigInt, facilityViewId)
             .input('data', mssql.BigInt, data)
             .input('date', mssql.DateTime, date)
-            .query('INSERT INTO Data (MetricId, FacilityId, Value, Time) VALUES (@metricId, @facilityViewId, @data, @date); SELECT SCOPE_IDENTITY() as Id');
+            .query(`IF NOT EXISTS(SELECT * FROM Data WHERE MetricId = @metricId AND FacilityId = @facilityViewId AND VALUE = @data)
+            BEGIN
+            INSERT INTO Data (MetricId, FacilityId, Value, Time) VALUES (@metricId, @facilityViewId, @data, @date); SELECT SCOPE_IDENTITY() as Id;
+            END`);
         });
     }
 }
