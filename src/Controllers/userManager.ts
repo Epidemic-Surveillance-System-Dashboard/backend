@@ -26,7 +26,7 @@ export class UserManager {
         var userLocationResult = await userLocationDataAccess.getUserLocation(userId);
 
         if(userLocationResult.rowsAffected[0] == 0){
-            return {"error": "user does not exist"};
+            return {"error": "User is not assigned to any locations"};
         }
 
         var userLocation = userLocationResult.recordsets[0][0];
