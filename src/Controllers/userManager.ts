@@ -68,11 +68,25 @@ export class UserManager {
         }
     }
 
-    public async updateUser(id: number, email: string, firstName: string, lastName: string, phone: string, userType: string){
+    public async updateUser(userId: number, email: string, firstName: string, lastName: string, phone: string, userType: string, locationId: number, locationType: string){
         var userDataAccess = new UsersDataAccess(config.get('sqlConfig'));
-        var result = await userDataAccess.updateUser(id, email, firstName, lastName, phone, userType);
-        if(result.rowsAffected[0] > 0){
-            return {"result": "update success"};
+        var userLocationDataAccess = new UserLocationDataAccess(config.get('sqlConfig'));
+        var userDataResult = await userDataAccess.updateUser(userId, email, firstName, lastName, phone, userType);
+        var userLocationResult = await userLocationDataAccess.updateUserLocation(userId, locationId, locationType);
+        console.log(userLocationResult);
+        if(userDataResult.rowsAffected[0] > 0){
+            if(userLocationResult.rowsAffected[0] > 0){
+                return {"result": "update success"};
+            }
+            else{
+                var result = await userLocationDataAccess.insertUserLocation(email, locationId, locationType, userId);
+                if(result.rowsAffected[0] > 0){
+                    return {"result": "update success"}; 
+                }
+                else{
+                    return {"result": "failed to update user location"};
+                }
+            }
         }
         else {
             return {"result": "user does not exist"};

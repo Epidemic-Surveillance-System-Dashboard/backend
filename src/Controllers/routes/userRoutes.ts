@@ -63,9 +63,9 @@ router.delete('/deleteUser/:userId', (req: Request, res: Response) => {
 router.put('/updateUser', (req: Request, res: Response) => {
     var body = req.body;
     console.log("in updateUser");
-    if(body.FirstName && body.LastName && body.Phone && body.Email && body.UserType && body.Id){
+    if(body.FirstName && body.LastName && body.Phone && body.Email && body.UserType && body.Id && body.LocationId && body.LocationType){
         var userManager = new UserManager();
-        userManager.updateUser(body.Id, body.Email, body.FirstName, body.LastName, body.Phone, body.UserType)
+        userManager.updateUser(body.Id, body.Email, body.FirstName, body.LastName, body.Phone, body.UserType, body.LocationId, body.LocationType)
         .then((result) => {
             res.json(result);
         });
