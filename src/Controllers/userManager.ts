@@ -73,24 +73,19 @@ export class UserManager {
         var userLocationDataAccess = new UserLocationDataAccess(config.get('sqlConfig'));
         var userDataResult = await userDataAccess.updateUser(userId, email, firstName, lastName, phone, userType);
         var userLocationResult = await userLocationDataAccess.updateUserLocation(userId, locationId, locationType);
-        console.log(userLocationResult);
-        if(userDataResult.rowsAffected[0] > 0){
-            if(userLocationResult.rowsAffected[0] > 0){
-                return {"result": "update success"};
-            }
-            else{
-                var result = await userLocationDataAccess.insertUserLocation(email, locationId, locationType, userId);
-                if(result.rowsAffected[0] > 0){
-                    return {"result": "update success"}; 
-                }
-                else{
-                    return {"result": "failed to update user location"};
-                }
+        
+        if(userDataResult.rowsAffected[0] == 0){
+            return {"result": "User does not exist"};
+        }
+
+        if(userLocationResult.rowsAffected[0] == 0){
+            var result = await userLocationDataAccess.insertUserLocation(email, locationId, locationType, userId);
+            if(result.rowsAffected[0] == 0){
+                return {"result": "Failed to update user location"};
             }
         }
-        else {
-            return {"result": "user does not exist"};
-        }
+
+        return {"result": "Update successful"};
     }
 
     private parseChildLocationIds(rawChildLocationIds){
