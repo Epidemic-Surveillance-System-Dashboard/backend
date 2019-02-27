@@ -28,6 +28,9 @@ async function run(){
         }
         else{
             for(var i = 0; i < files.length; i++){
+                if(files[i] == ".DS_Store"){
+                    continue;
+                }
                 if(killProcess){
                     rdyToKillProcess = true;
                     break;
