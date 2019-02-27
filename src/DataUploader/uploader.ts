@@ -2049,7 +2049,13 @@ export class DataUploader {
     }
 
     getFileInfo(fileName){
-        return fileName.split('-');
+        var nameArr = fileName.split('-');
+        nameArr[0] = nameArr[0].replace('State', '');
+        nameArr[1] = nameArr[1].replace('Local Government Area', '');
+        nameArr[2] = nameArr[2].replace('Ward', '');
+        nameArr[3] = nameArr[3].replace('Disp', '');
+        nameArr[3] = nameArr[3].replace('Dispensary', '');
+        return nameArr;
     }
 }
 
