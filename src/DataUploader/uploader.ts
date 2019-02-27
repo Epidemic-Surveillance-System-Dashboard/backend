@@ -16,13 +16,12 @@ export class DataUploader {
 
     constructor() {}
 
-    async uploadXlsxFile(fileName: string){ 
-        this.workbook = xlsx.readFile(fileName);
+    async uploadXlsxFile(filePath: string, fileName: string){ 
+        this.workbook = xlsx.readFile(filePath);
         var sheetNameList: string[] = this.workbook.SheetNames;
         var sheetDate = this.getDateFromWorkbook(this.workbook);
         var fileInfo = this.getFileInfo(fileName);
-        console.log(fileInfo[0].split("/")[3]);
-        var facilityViewId = await this.uploadLocation(fileInfo[0].split("/")[2], fileInfo[1], fileInfo[2], fileInfo[3]);
+        var facilityViewId = await this.uploadLocation(fileInfo[0], fileInfo[1], fileInfo[2], fileInfo[3]);
         console.log("locations uploaded");
         sheetNameList.forEach((sheetName) => { 
             switch(sheetName) {
