@@ -62,8 +62,9 @@ async function run(){
 
 async function batchRun(files){
     for(var i = 0; i < files.length; i++){
-        uploader.uploadXlsxFile("src/DataUploader/testUpload/" + files[i], files[i]);
-        logger.log(files[i]);
+        uploader.uploadXlsxFile("src/DataUploader/testUpload/" + files[i], files[i]).then((result) => {
+            logger.log(files[i]);
+        });
     }
 }
 

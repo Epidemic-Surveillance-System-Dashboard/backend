@@ -7,18 +7,23 @@ export class GroupsDataAccess extends SqlDataAccess {
         super(config);
     }
 
-    insertGroup(name: string){
-        return SqlDataAccess.sqlPool.then(pool => {
-            return pool.request()
-            .input('name', mssql.NVarChar, name)
-            .query(`IF NOT EXISTS(SELECT * FROM Groups WHERE GroupName = @name)
-            BEGIN
-                INSERT INTO Groups (GroupName) VALUES (@name); SELECT SCOPE_IDENTITY() as Id
-            END
-            ELSE
-            BEGIN
-              SELECT Id FROM Groups WHERE GroupName = @name
-            END`);
+    public insertGroup(name: string){
+        return this.retryQuery( () => {
+            return SqlDataAccess.sqlPool.then(pool => {
+                return pool.request()
+                .input('name', mssql.NVarChar, name)
+                .query(`SET TRANSACTION ISOLATION LEVEL SERIALIZABLE
+                BEGIN TRAN
+                IF NOT EXISTS(SELECT * FROM Groups WHERE GroupName = @name)
+                BEGIN
+                    INSERT INTO Groups (GroupName) VALUES (@name); SELECT SCOPE_IDENTITY() as Id
+                END
+                ELSE
+                BEGIN
+                  SELECT Id FROM Groups WHERE GroupName = @name
+                END
+                COMMIT TRAN`);
+            });
         });
     }
 

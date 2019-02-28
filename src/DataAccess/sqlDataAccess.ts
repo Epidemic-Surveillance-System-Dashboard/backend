@@ -21,4 +21,17 @@ export class SqlDataAccess {
         }
         return `${columnName} IN (${parameterNames.join(',')})`;
     }
+
+    protected retryQuery(fn){
+        var maxRetries = 3;
+        var currentRetries = 0;
+        while(currentRetries < maxRetries){
+            try {
+                return fn();
+            }
+            catch(e){
+                currentRetries++;
+            }
+        }
+    }
 }

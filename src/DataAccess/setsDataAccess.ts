@@ -8,19 +8,22 @@ export class SetsDataAccess extends SqlDataAccess {
     }
 
     insertSet(name: string, groupId: number){
-        return SqlDataAccess.sqlPool.then(pool => {
-            return pool.request()
-            .input('name', mssql.NVarChar, name)
-            .input('groupId', mssql.BigInt, groupId)
-            .query(`IF NOT EXISTS(SELECT * FROM Sets WHERE SetName = @name)
-            BEGIN
-            INSERT INTO Sets (SetName, GroupId) VALUES (@name, @groupId) SELECT SCOPE_IDENTITY() as Id;
-            END
-            ELSE
-            BEGIN
-              SELECT Id FROM Sets WHERE SetName = @name
-            END`);
+        return this.retryQuery(() => {
+            return SqlDataAccess.sqlPool.then(pool => {
+                return pool.request()
+                .input('name', mssql.NVarChar, name)
+                .input('groupId', mssql.BigInt, groupId)
+                .query(`IF NOT EXISTS(SELECT * FROM Sets WHERE SetName = @name)
+                BEGIN
+                INSERT INTO Sets (SetName, GroupId) VALUES (@name, @groupId) SELECT SCOPE_IDENTITY() as Id;
+                END
+                ELSE
+                BEGIN
+                  SELECT Id FROM Sets WHERE SetName = @name
+                END`);
+            });
         });
+        
     }
 
     getSetId(name: string){
