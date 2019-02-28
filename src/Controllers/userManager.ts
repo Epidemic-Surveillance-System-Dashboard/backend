@@ -19,6 +19,12 @@ export class UserManager {
         }
     }
 
+    public async obtainAllUsers(){
+        var userDataAccess = new UsersDataAccess(config.get('sqlConfig'));
+        var result = await userDataAccess.getAllUsers();
+        return result.recordsets[0];
+    }
+
     public async getAllUsers(userId: number){
         var userDataAccess = new UsersDataAccess(config.get('sqlConfig'));
         var userLocationDataAccess = new UserLocationDataAccess(config.get('sqlConfig'));

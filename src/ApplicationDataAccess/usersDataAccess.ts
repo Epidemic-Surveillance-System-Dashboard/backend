@@ -56,6 +56,13 @@ export class UsersDataAccess extends SqlDataAccess{
         });
     }
 
+    getAllUsers(){
+        return SqlDataAccess.sqlPool.then(pool => {
+            return pool.request()
+            .query('SELECT * FROM Users;');
+        });
+    }
+
     deleteUserByEmail(email: string){
         return SqlDataAccess.sqlPool.then(pool => {
             return pool.request()

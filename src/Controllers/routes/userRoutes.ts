@@ -4,6 +4,7 @@ import { UserManager } from '../userManager';
 const router: Router = Router();
 
 router.get('/:userId', (req: Request, res: Response) => {
+    console.log("###############UserID###########");
     var userId = req.params.userId;
     if(!userId){
         res.json({"error": "invalid or empty userId"});
@@ -15,7 +16,16 @@ router.get('/:userId', (req: Request, res: Response) => {
     });
 });
 
+router.get('/temp/allUsers', (req: Request, res: Response) => {
+    console.log("###############Helloworld###########");
+    var userManager = new UserManager();
+    userManager.obtainAllUsers().then((user) => {
+        res.json(user);
+    });
+});
+
 router.get('/getAllUsers/:userId', async (req: Request, res: Response) => {
+    console.log("###############here1###########");
     var userId = req.params.userId;
     if(!userId){
         res.json({
