@@ -252,17 +252,17 @@ export class DataUploader {
             var lgaResult = await lgaDataAccess.insertLGA(lga, stateResult.recordset[0].Id);
             var wardResult = await wardDataAccess.insertWard(ward, lgaResult.recordset[0].Id);
             var facilityResult = await facilityDataAccess.insertFacility(facility, wardResult.recordset[0].Id);
-            facilityViewResult = await facilityViewDataAccess.insertFacilityView(
+            /*facilityViewResult = await facilityViewDataAccess.insertFacilityView(
                 facilityResult.recordset[0].Id, 
                 wardResult.recordset[0].Id, 
                 lgaResult.recordset[0].Id, 
                 stateResult.recordset[0].Id
-            );
+            );*/
         }
         catch(e){
             console.log("upload location error1: " + e);
         }
-        return facilityViewResult.recordset[0].Id;
+        return facilityResult.recordset[0].Id;
     }
 
     async uploadFacilityAttendanceA(sheetName: string, facilityViewId, sheetDate) {
@@ -303,7 +303,7 @@ export class DataUploader {
                 try{
                     var setIdResult = await setsDataAccess.getSetId(setName);
                     var metricIdResult = await metricDataAccess.insertMetric(metricName, setIdResult.recordset[0].Id);
-                    dataDataAccess.insertData(metricIdResult.recordset[0].Id, facilityViewId, dataValue, sheetDate);
+                    await dataDataAccess.insertData(metricIdResult.recordset[0].Id, facilityViewId, dataValue, sheetDate);
                 }
                 catch(e){
                     console.log("uploadFacilityAttendanceA error: " + e);
@@ -341,7 +341,7 @@ export class DataUploader {
                 try{
                     var setIdResult = await setsDataAccess.getSetId(setName);
                     var metricIdResult = await metricDataAccess.insertMetric(metricName, setIdResult.recordset[0].Id);
-                    dataDataAccess.insertData(metricIdResult.recordset[0].Id, facilityViewId, dataValue, sheetDate);
+                    await dataDataAccess.insertData(metricIdResult.recordset[0].Id, facilityViewId, dataValue, sheetDate);
                 }
                 catch(e){
                     console.log("uploadFacilityAttendanceB error: " + e);
@@ -390,7 +390,7 @@ export class DataUploader {
                 try{
                     var setIdResult = await setsDataAccess.getSetId(setName);
                     var metricIdResult = await metricDataAccess.insertMetric(metricName, setIdResult.recordset[0].Id);
-                    dataDataAccess.insertData(metricIdResult.recordset[0].Id, facilityViewId, dataValue, sheetDate);
+                    await dataDataAccess.insertData(metricIdResult.recordset[0].Id, facilityViewId, dataValue, sheetDate);
                 }
                 catch(e){
                     console.log("maternalHealthAntePostNatalCare error: " + e);
@@ -427,7 +427,7 @@ export class DataUploader {
                 try{
                     var setIdResult = await setsDataAccess.getSetId(setName);
                     var metricIdResult = await metricDataAccess.insertMetric(metricName, setIdResult.recordset[0].Id);
-                    dataDataAccess.insertData(metricIdResult.recordset[0].Id, facilityViewId, dataValue, sheetDate);
+                    await dataDataAccess.insertData(metricIdResult.recordset[0].Id, facilityViewId, dataValue, sheetDate);
                 }
                 catch(e){
                     console.log("maternalHealthLabourDelivery error: " + e);
@@ -466,7 +466,7 @@ export class DataUploader {
                     try{
                         var setIdResult = await setsDataAccess.getSetId(setName);
                         var metricIdResult = await metricDataAccess.insertMetric(metricName, setIdResult.recordset[0].Id);
-                        dataDataAccess.insertData(metricIdResult.recordset[0].Id, facilityViewId, dataValue, sheetDate);
+                        await dataDataAccess.insertData(metricIdResult.recordset[0].Id, facilityViewId, dataValue, sheetDate);
                     }
                     catch(e){
                         console.log("uploadTetanusToxoidWomen error: " + e);
@@ -514,7 +514,7 @@ export class DataUploader {
                 try{
                     var setIdResult = await setsDataAccess.getSetId(setName);
                     var metricIdResult = await metricDataAccess.insertMetric(metricName, setIdResult.recordset[0].Id);
-                    dataDataAccess.insertData(metricIdResult.recordset[0].Id, facilityViewId, dataValue, sheetDate);
+                    await dataDataAccess.insertData(metricIdResult.recordset[0].Id, facilityViewId, dataValue, sheetDate);
                 }
                 catch(e){
                     console.log("Pregnancy Outcomes error: " + e);
@@ -557,7 +557,7 @@ export class DataUploader {
                 try{
                     var setIdResult = await setsDataAccess.getSetId(setName);
                     var metricIdResult = await metricDataAccess.insertMetric(metricName, setIdResult.recordset[0].Id);
-                    dataDataAccess.insertData(metricIdResult.recordset[0].Id, facilityViewId, dataValue, sheetDate);
+                    await dataDataAccess.insertData(metricIdResult.recordset[0].Id, facilityViewId, dataValue, sheetDate);
                 }
                 catch(e){
                     console.log("uploadPregnancyOutcomeStillBirths error: " + e);
@@ -602,7 +602,7 @@ export class DataUploader {
                     try{
                         var setIdResult = await setsDataAccess.getSetId(setName);
                         var metricIdResult = await metricDataAccess.insertMetric(metricName, setIdResult.recordset[0].Id);
-                        dataDataAccess.insertData(metricIdResult.recordset[0].Id, facilityViewId, dataValue, sheetDate);
+                        await dataDataAccess.insertData(metricIdResult.recordset[0].Id, facilityViewId, dataValue, sheetDate);
                     }
                     catch(e){
                         console.log("uploadPregnancyOutcomeComplication error: " + e);
@@ -642,7 +642,7 @@ export class DataUploader {
                     try{
                         var setIdResult = await setsDataAccess.getSetId(setName);
                         var metricIdResult = await metricDataAccess.insertMetric(metricName, setIdResult.recordset[0].Id);
-                        dataDataAccess.insertData(metricIdResult.recordset[0].Id, facilityViewId, dataValue, sheetDate);
+                        await dataDataAccess.insertData(metricIdResult.recordset[0].Id, facilityViewId, dataValue, sheetDate);
                     }
                     catch(e){
                         console.log("uploadPregnancyOutcomeComplication error: " + e);
@@ -689,7 +689,7 @@ export class DataUploader {
                     try{
                         var setIdResult = await setsDataAccess.getSetId(setName);
                         var metricIdResult = await metricDataAccess.insertMetric(metricName, setIdResult.recordset[0].Id);
-                        dataDataAccess.insertData(metricIdResult.recordset[0].Id, facilityViewId, dataValue, sheetDate);
+                        await dataDataAccess.insertData(metricIdResult.recordset[0].Id, facilityViewId, dataValue, sheetDate);
                     }
                     catch(e){
                         console.log("uploadNutritionGender error: " + e);
@@ -727,7 +727,7 @@ export class DataUploader {
                 try{
                     var setIdResult = await setsDataAccess.getSetId(setName);
                     var metricIdResult = await metricDataAccess.insertMetric(metricName, setIdResult.recordset[0].Id);
-                    dataDataAccess.insertData(metricIdResult.recordset[0].Id, facilityViewId, dataValue, sheetDate);
+                    await dataDataAccess.insertData(metricIdResult.recordset[0].Id, facilityViewId, dataValue, sheetDate);
                 }
                 catch(e){
                     console.log("uploadMalariaPrevention error: " + e);
@@ -773,7 +773,7 @@ export class DataUploader {
                     try{
                         var setIdResult = await setsDataAccess.getSetId(setName);
                         var metricIdResult = await metricDataAccess.insertMetric(metricName, setIdResult.recordset[0].Id);
-                        dataDataAccess.insertData(metricIdResult.recordset[0].Id, facilityViewId, dataValue, sheetDate);
+                        await dataDataAccess.insertData(metricIdResult.recordset[0].Id, facilityViewId, dataValue, sheetDate);
                     }
                     catch(e){
                         console.log("uploadIMCIGender error: " + e);
@@ -820,7 +820,7 @@ export class DataUploader {
                     try{
                         var setIdResult = await setsDataAccess.getSetId(setName);
                         var metricIdResult = await metricDataAccess.insertMetric(metricName, setIdResult.recordset[0].Id);
-                        dataDataAccess.insertData(metricIdResult.recordset[0].Id, facilityViewId, dataValue, sheetDate);
+                        await dataDataAccess.insertData(metricIdResult.recordset[0].Id, facilityViewId, dataValue, sheetDate);
                     }
                     catch(e){
                         console.log("uploadFamilyPlanningGender error: " + e);
@@ -858,7 +858,7 @@ export class DataUploader {
                 try{
                     var setIdResult = await setsDataAccess.getSetId(setName);
                     var metricIdResult = await metricDataAccess.insertMetric(metricName, setIdResult.recordset[0].Id);
-                    dataDataAccess.insertData(metricIdResult.recordset[0].Id, facilityViewId, dataValue, sheetDate);
+                    await dataDataAccess.insertData(metricIdResult.recordset[0].Id, facilityViewId, dataValue, sheetDate);
                 }
                 catch(e){
                     console.log("uploadFamilyPlanningBDefault error: " + e);
@@ -895,7 +895,7 @@ export class DataUploader {
                 try{
                     var setIdResult = await setsDataAccess.getSetId(setName);
                     var metricIdResult = await metricDataAccess.insertMetric(metricName, setIdResult.recordset[0].Id);
-                    dataDataAccess.insertData(metricIdResult.recordset[0].Id, facilityViewId, dataValue, sheetDate);
+                    await dataDataAccess.insertData(metricIdResult.recordset[0].Id, facilityViewId, dataValue, sheetDate);
                 }
                 catch(e){
                     console.log("uploadReferralsDefault error: " + e);
@@ -941,7 +941,7 @@ export class DataUploader {
                     try{
                         var setIdResult = await setsDataAccess.getSetId(setName);
                         var metricIdResult = await metricDataAccess.insertMetric(metricName, setIdResult.recordset[0].Id);
-                        dataDataAccess.insertData(metricIdResult.recordset[0].Id, facilityViewId, dataValue, sheetDate);
+                        await dataDataAccess.insertData(metricIdResult.recordset[0].Id, facilityViewId, dataValue, sheetDate);
                     }
                     catch(e){
                         console.log("uploadNonCommunicableDisease error: " + e);
@@ -979,7 +979,7 @@ export class DataUploader {
                 try{
                     var setIdResult = await setsDataAccess.getSetId(setName);
                     var metricIdResult = await metricDataAccess.insertMetric(metricName, setIdResult.recordset[0].Id);
-                    dataDataAccess.insertData(metricIdResult.recordset[0].Id, facilityViewId, dataValue, sheetDate);
+                    await dataDataAccess.insertData(metricIdResult.recordset[0].Id, facilityViewId, dataValue, sheetDate);
                 }
                 catch(e){
                     console.log("uploadSexuallyTransmittedInfections error: " + e);
@@ -1030,7 +1030,7 @@ export class DataUploader {
                 try{
                     var setIdResult = await setsDataAccess.getSetId(setName);
                     var metricIdResult = await metricDataAccess.insertMetric(metricName, setIdResult.recordset[0].Id);
-                    dataDataAccess.insertData(metricIdResult.recordset[0].Id, facilityViewId, dataValue, sheetDate);
+                    await dataDataAccess.insertData(metricIdResult.recordset[0].Id, facilityViewId, dataValue, sheetDate);
                 }
                 catch(e){
                     console.log("uploadLaboratoryDefault error: " + e);
@@ -1067,7 +1067,7 @@ export class DataUploader {
                 try{
                     var setIdResult = await setsDataAccess.getSetId(setName);
                     var metricIdResult = await metricDataAccess.insertMetric(metricName, setIdResult.recordset[0].Id);
-                    dataDataAccess.insertData(metricIdResult.recordset[0].Id, facilityViewId, dataValue, sheetDate);
+                    await dataDataAccess.insertData(metricIdResult.recordset[0].Id, facilityViewId, dataValue, sheetDate);
                 }
                 catch(e){
                     console.log("uploadInpatient error: " + e);
@@ -1114,7 +1114,7 @@ export class DataUploader {
                 try{
                     var setIdResult = await setsDataAccess.getSetId(setName);
                     var metricIdResult = await metricDataAccess.insertMetric(metricName, setIdResult.recordset[0].Id);
-                    dataDataAccess.insertData(metricIdResult.recordset[0].Id, facilityViewId, dataValue, sheetDate);
+                    await dataDataAccess.insertData(metricIdResult.recordset[0].Id, facilityViewId, dataValue, sheetDate);
                 }
                 catch(e){
                     console.log("Pregnancy Outcomes error: " + e);
@@ -1151,7 +1151,7 @@ export class DataUploader {
                 try{
                     var setIdResult = await setsDataAccess.getSetId(setName);
                     var metricIdResult = await metricDataAccess.insertMetric(metricName, setIdResult.recordset[0].Id);
-                    dataDataAccess.insertData(metricIdResult.recordset[0].Id, facilityViewId, dataValue, sheetDate);
+                    await dataDataAccess.insertData(metricIdResult.recordset[0].Id, facilityViewId, dataValue, sheetDate);
                 }
                 catch(e){
                     console.log("uploadPharmaceuticalServiceDefault error: " + e);
@@ -1188,7 +1188,7 @@ export class DataUploader {
                 try{
                     var setIdResult = await setsDataAccess.getSetId(setName);
                     var metricIdResult = await metricDataAccess.insertMetric(metricName, setIdResult.recordset[0].Id);
-                    dataDataAccess.insertData(metricIdResult.recordset[0].Id, facilityViewId, dataValue, sheetDate);
+                    await dataDataAccess.insertData(metricIdResult.recordset[0].Id, facilityViewId, dataValue, sheetDate);
                 }
                 catch(e){
                     console.log("uploadAdverseDrugReactionA error: " + e);
@@ -1226,7 +1226,7 @@ export class DataUploader {
                 try{
                     var setIdResult = await setsDataAccess.getSetId(setName);
                     var metricIdResult = await metricDataAccess.insertMetric(metricName, setIdResult.recordset[0].Id);
-                    dataDataAccess.insertData(metricIdResult.recordset[0].Id, facilityViewId, dataValue, sheetDate);
+                    await dataDataAccess.insertData(metricIdResult.recordset[0].Id, facilityViewId, dataValue, sheetDate);
                 }
                 catch(e){
                     console.log("uploadAdverseDrugReactionB error: " + e);
@@ -1273,7 +1273,7 @@ export class DataUploader {
                 try{
                     var setIdResult = await setsDataAccess.getSetId(setName);
                     var metricIdResult = await metricDataAccess.insertMetric(metricName, setIdResult.recordset[0].Id);
-                    dataDataAccess.insertData(metricIdResult.recordset[0].Id, facilityViewId, dataValue, sheetDate);
+                    await dataDataAccess.insertData(metricIdResult.recordset[0].Id, facilityViewId, dataValue, sheetDate);
                 }
                 catch(e){
                     console.log("uploadMortalityAge error: " + e);
@@ -1310,7 +1310,7 @@ export class DataUploader {
                 try{
                     var setIdResult = await setsDataAccess.getSetId(setName);
                     var metricIdResult = await metricDataAccess.insertMetric(metricName, setIdResult.recordset[0].Id);
-                    dataDataAccess.insertData(metricIdResult.recordset[0].Id, facilityViewId, dataValue, sheetDate);
+                    await dataDataAccess.insertData(metricIdResult.recordset[0].Id, facilityViewId, dataValue, sheetDate);
                 }
                 catch(e){
                     console.log("uploadMaternalMortalityA error: " + e);
@@ -1348,7 +1348,7 @@ export class DataUploader {
                 try{
                     var setIdResult = await setsDataAccess.getSetId(setName);
                     var metricIdResult = await metricDataAccess.insertMetric(metricName, setIdResult.recordset[0].Id);
-                    dataDataAccess.insertData(metricIdResult.recordset[0].Id, facilityViewId, dataValue, sheetDate);
+                    await dataDataAccess.insertData(metricIdResult.recordset[0].Id, facilityViewId, dataValue, sheetDate);
                 }
                 catch(e){
                     console.log("uploadMaternalMortalityB error: " + e);
@@ -1388,7 +1388,7 @@ export class DataUploader {
                 try{
                     var setIdResult = await setsDataAccess.getSetId(setName);
                     var metricIdResult = await metricDataAccess.insertMetric(metricName, setIdResult.recordset[0].Id);
-                    dataDataAccess.insertData(metricIdResult.recordset[0].Id, facilityViewId, dataValue, sheetDate);
+                    await dataDataAccess.insertData(metricIdResult.recordset[0].Id, facilityViewId, dataValue, sheetDate);
                 }
                 catch(e){
                     console.log("Neonatal Deaths error: " + e);
@@ -1426,7 +1426,7 @@ export class DataUploader {
                 try{
                     var setIdResult = await setsDataAccess.getSetId(setName);
                     var metricIdResult = await metricDataAccess.insertMetric(metricName, setIdResult.recordset[0].Id);
-                    dataDataAccess.insertData(metricIdResult.recordset[0].Id, facilityViewId, dataValue, sheetDate);
+                    await dataDataAccess.insertData(metricIdResult.recordset[0].Id, facilityViewId, dataValue, sheetDate);
                 }
                 catch(e){
                     console.log("Under 5 Mortality error: " + e);
@@ -1473,7 +1473,7 @@ export class DataUploader {
                     try{
                         var setIdResult = await setsDataAccess.getSetId(setName);
                         var metricIdResult = await metricDataAccess.insertMetric(metricName, setIdResult.recordset[0].Id);
-                        dataDataAccess.insertData(metricIdResult.recordset[0].Id, facilityViewId, dataValue, sheetDate);
+                        await dataDataAccess.insertData(metricIdResult.recordset[0].Id, facilityViewId, dataValue, sheetDate);
                     }
                     catch(e){
                         console.log("HIV Counselling And Testing error: " + e);
@@ -1512,7 +1512,7 @@ export class DataUploader {
                 try{
                     var setIdResult = await setsDataAccess.getSetId(setName);
                     var metricIdResult = await metricDataAccess.insertMetric(metricName, setIdResult.recordset[0].Id);
-                    dataDataAccess.insertData(metricIdResult.recordset[0].Id, facilityViewId, dataValue, sheetDate);
+                    await dataDataAccess.insertData(metricIdResult.recordset[0].Id, facilityViewId, dataValue, sheetDate);
                 }
                 catch(e){
                     console.log("HIV Counselling Couples error: " + e);
@@ -1559,7 +1559,7 @@ export class DataUploader {
                     try{
                         var setIdResult = await setsDataAccess.getSetId(setName);
                         var metricIdResult = await metricDataAccess.insertMetric(metricName, setIdResult.recordset[0].Id);
-                        dataDataAccess.insertData(metricIdResult.recordset[0].Id, facilityViewId, dataValue, sheetDate);
+                        await dataDataAccess.insertData(metricIdResult.recordset[0].Id, facilityViewId, dataValue, sheetDate);
                     }
                     catch(e){
                         console.log("HIV Care Treatment: " + e);
@@ -1599,7 +1599,7 @@ export class DataUploader {
                     try{
                         var setIdResult = await setsDataAccess.getSetId(setName);
                         var metricIdResult = await metricDataAccess.insertMetric(metricName, setIdResult.recordset[0].Id);
-                        dataDataAccess.insertData(metricIdResult.recordset[0].Id, facilityViewId, dataValue, sheetDate);
+                        await dataDataAccess.insertData(metricIdResult.recordset[0].Id, facilityViewId, dataValue, sheetDate);
                     }
                     catch(e){
                         console.log("SRHHIV Integration error: " + e);
@@ -1638,7 +1638,7 @@ export class DataUploader {
                 try{
                     var setIdResult = await setsDataAccess.getSetId(setName);
                     var metricIdResult = await metricDataAccess.insertMetric(metricName, setIdResult.recordset[0].Id);
-                    dataDataAccess.insertData(metricIdResult.recordset[0].Id, facilityViewId, dataValue, sheetDate);
+                    await dataDataAccess.insertData(metricIdResult.recordset[0].Id, facilityViewId, dataValue, sheetDate);
                 }
                 catch(e){
                     console.log("TBHIV error: " + e);
@@ -1676,7 +1676,7 @@ export class DataUploader {
                 try{
                     var setIdResult = await setsDataAccess.getSetId(setName);
                     var metricIdResult = await metricDataAccess.insertMetric(metricName, setIdResult.recordset[0].Id);
-                    dataDataAccess.insertData(metricIdResult.recordset[0].Id, facilityViewId, dataValue, sheetDate);
+                    await dataDataAccess.insertData(metricIdResult.recordset[0].Id, facilityViewId, dataValue, sheetDate);
                 }
                 catch(e){
                     console.log("PMTCT error: " + e);
@@ -1723,7 +1723,7 @@ export class DataUploader {
                     try{
                         var setIdResult = await setsDataAccess.getSetId(setName);
                         var metricIdResult = await metricDataAccess.insertMetric(metricName, setIdResult.recordset[0].Id);
-                        dataDataAccess.insertData(metricIdResult.recordset[0].Id, facilityViewId, dataValue, sheetDate);
+                        await dataDataAccess.insertData(metricIdResult.recordset[0].Id, facilityViewId, dataValue, sheetDate);
                     }
                     catch(e){
                         console.log("PMTCT Infant error: " + e);
@@ -1771,7 +1771,7 @@ export class DataUploader {
                     try{
                         var setIdResult = await setsDataAccess.getSetId(setName);
                         var metricIdResult = await metricDataAccess.insertMetric(metricName, setIdResult.recordset[0].Id);
-                        dataDataAccess.insertData(metricIdResult.recordset[0].Id, facilityViewId, dataValue, sheetDate);
+                        await dataDataAccess.insertData(metricIdResult.recordset[0].Id, facilityViewId, dataValue, sheetDate);
                     }
                     catch(e){
                         console.log("TB Cases error: " + e);
@@ -1819,7 +1819,7 @@ export class DataUploader {
                     try{
                         var setIdResult = await setsDataAccess.getSetId(setName);
                         var metricIdResult = await metricDataAccess.insertMetric(metricName, setIdResult.recordset[0].Id);
-                        dataDataAccess.insertData(metricIdResult.recordset[0].Id, facilityViewId, dataValue, sheetDate);
+                        await dataDataAccess.insertData(metricIdResult.recordset[0].Id, facilityViewId, dataValue, sheetDate);
                     }
                     catch(e){
                         console.log("Malaria Test Cases error: " + e);
@@ -1858,7 +1858,7 @@ export class DataUploader {
                 try{
                     var setIdResult = await setsDataAccess.getSetId(setName);
                     var metricIdResult = await metricDataAccess.insertMetric(metricName, setIdResult.recordset[0].Id);
-                    dataDataAccess.insertData(metricIdResult.recordset[0].Id, facilityViewId, dataValue, sheetDate);
+                    await dataDataAccess.insertData(metricIdResult.recordset[0].Id, facilityViewId, dataValue, sheetDate);
                 }
                 catch(e){
                     console.log("Malaria In Pregnancy error: " + e);
@@ -1905,7 +1905,7 @@ export class DataUploader {
                     try{
                         var setIdResult = await setsDataAccess.getSetId(setName);
                         var metricIdResult = await metricDataAccess.insertMetric(metricName, setIdResult.recordset[0].Id);
-                        dataDataAccess.insertData(metricIdResult.recordset[0].Id, facilityViewId, dataValue, sheetDate);
+                        await dataDataAccess.insertData(metricIdResult.recordset[0].Id, facilityViewId, dataValue, sheetDate);
                     }
                     catch(e){
                         console.log("Malaria Test Cases error: " + e);
@@ -1953,7 +1953,7 @@ export class DataUploader {
                     try{
                         var setIdResult = await setsDataAccess.getSetId(setName);
                         var metricIdResult = await metricDataAccess.insertMetric(metricName, setIdResult.recordset[0].Id);
-                        dataDataAccess.insertData(metricIdResult.recordset[0].Id, facilityViewId, dataValue, sheetDate);
+                        await dataDataAccess.insertData(metricIdResult.recordset[0].Id, facilityViewId, dataValue, sheetDate);
                     }
                     catch(e){
                         console.log("Malaria Test Cases error: " + e);
@@ -1992,7 +1992,7 @@ export class DataUploader {
                 try{
                     var setIdResult = await setsDataAccess.getSetId(setName);
                     var metricIdResult = await metricDataAccess.insertMetric(metricName, setIdResult.recordset[0].Id);
-                    dataDataAccess.insertData(metricIdResult.recordset[0].Id, facilityViewId, dataValue, sheetDate);
+                    await dataDataAccess.insertData(metricIdResult.recordset[0].Id, facilityViewId, dataValue, sheetDate);
                 }
                 catch(e){
                     console.log("Obstetric Fistula error: " + e);
@@ -2030,7 +2030,7 @@ export class DataUploader {
                 try{
                     var setIdResult = await setsDataAccess.getSetId(setName);
                     var metricIdResult = await metricDataAccess.insertMetric(metricName, setIdResult.recordset[0].Id);
-                    dataDataAccess.insertData(metricIdResult.recordset[0].Id, facilityViewId, dataValue, sheetDate);
+                    await dataDataAccess.insertData(metricIdResult.recordset[0].Id, facilityViewId, dataValue, sheetDate);
                 }
                 catch(e){
                     console.log("Obstetric Fistula error: " + e);

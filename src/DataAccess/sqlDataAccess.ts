@@ -22,8 +22,11 @@ export class SqlDataAccess {
         return `${columnName} IN (${parameterNames.join(',')})`;
     }
 
-    protected retryQuery(fn){
-        var maxRetries = 10;
+    protected async retryQuery(fn){
+        var maxRetries = 20;
+        var delay = 500;
+        var maxDelay = 10000;
+        var delayRound = 1;
         var currentRetries = 0;
         while(currentRetries < maxRetries){
             try {
@@ -31,7 +34,19 @@ export class SqlDataAccess {
             }
             catch(e){
                 currentRetries++;
+                if(delay <= maxDelay){
+                    delay = delay * delayRound;
+                    delayRound++;
+                }
+                await this.sleep(delay);
+                
             }
         }
+    }
+
+    private sleep(ms){
+        return new Promise(resolve => {
+            setTimeout(resolve, ms);
+        });
     }
 }

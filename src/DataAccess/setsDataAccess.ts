@@ -13,14 +13,17 @@ export class SetsDataAccess extends SqlDataAccess {
                 return pool.request()
                 .input('name', mssql.NVarChar, name)
                 .input('groupId', mssql.BigInt, groupId)
-                .query(`IF NOT EXISTS(SELECT * FROM Sets WHERE SetName = @name)
+                .query(`SET TRANSACTION ISOLATION LEVEL SERIALIZABLE
+                BEGIN TRAN
+                IF NOT EXISTS(SELECT * FROM Sets WHERE SetName = @name)
                 BEGIN
                 INSERT INTO Sets (SetName, GroupId) VALUES (@name, @groupId) SELECT SCOPE_IDENTITY() as Id;
                 END
                 ELSE
                 BEGIN
                   SELECT Id FROM Sets WHERE SetName = @name
-                END`);
+                END
+                COMMIT TRAN`);
             });
         });
         
