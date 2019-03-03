@@ -13,6 +13,10 @@ export class UserCredentialManager {
         var userCredentialDataAccess = new UserCredentialDataAccess(config.get('sqlConfig'));
         var userCredentials = await userCredentialDataAccess.getUserCredential(email);
         var userCredentialService = new UserCredentialService();
+
+        if(userCredentials.rowsAffected[0] == 0){
+            return { "success": false };
+        }
         
         var result = await userCredentialService.compare(plaintextPassword, userCredentials.recordsets[0][0].PasswordHash);
         
@@ -24,6 +28,6 @@ export class UserCredentialManager {
                 "user": user.recordsets[0][0]
             };
         }
-        return {"success": false};
+        return { "success": false };
     }
 }
