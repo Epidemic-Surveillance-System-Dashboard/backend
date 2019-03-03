@@ -57,13 +57,12 @@ router.post('/registerUser', (req: Request, res: Response) => {
     }
 });
 
-router.post('/login', (req: Request, res: Response) => {
+router.post('/login', async (req: Request, res: Response) => {
     var body = req.body;
     if(body.email && body.password){
         var userCredentialManager = new UserCredentialManager();
-        userCredentialManager.login(body.email, body.password).then((result) => {
-            res.json("hello world");
-        });
+        var result = await userCredentialManager.login(body.email, body.password);
+        res.json("hello world");
         
     }
     else{
