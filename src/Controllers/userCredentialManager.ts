@@ -10,9 +10,11 @@ export class UserCredentialManager {
     }
 
     public async login(email: string, plaintextPassword: string){
+        console.log("in login");
         var userCredentialDataAccess = new UserCredentialDataAccess(config.get('sqlConfig'));
         var userCredentials = await userCredentialDataAccess.getUserCredential(email);
-        var result = await UserCredentialService.compare(plaintextPassword, userCredentials.recordsets[0][0].PasswordHash);
+        var userCredentialService = new UserCredentialService();
+        var result = await userCredentialService.compare(plaintextPassword, userCredentials.recordsets[0][0].PasswordHash);
         if(result){
             var userDataAccess = new UsersDataAccess(config.get('sqlConfig'));
             var user = await userDataAccess.getUserByEmail(email);
