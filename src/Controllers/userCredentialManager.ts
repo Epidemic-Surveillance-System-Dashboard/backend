@@ -14,7 +14,14 @@ export class UserCredentialManager {
         var userCredentialDataAccess = new UserCredentialDataAccess(config.get('sqlConfig'));
         var userCredentials = await userCredentialDataAccess.getUserCredential(email);
         var userCredentialService = new UserCredentialService();
-        var result = await userCredentialService.compare(plaintextPassword, userCredentials.recordsets[0][0].PasswordHash);
+        var result = false;
+        try{
+            result = await userCredentialService.compare(plaintextPassword, userCredentials.recordsets[0][0].PasswordHash);
+        }
+        catch(e){
+            console.log("error" + e);
+        }
+        
         if(result){
             var userDataAccess = new UsersDataAccess(config.get('sqlConfig'));
             var user = await userDataAccess.getUserByEmail(email);
