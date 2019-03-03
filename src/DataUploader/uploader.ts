@@ -2041,8 +2041,9 @@ export class DataUploader {
 
     getDateFromWorkbook(workbook): Date{
         var sheets = this.workbook.SheetNames;
+       // console.log(sheets);
         var extractedDate = workbook.Sheets[sheets[0]]['A3'].v.split(" ").splice(-2);
-        console.log(extractedDate);
+        //console.log(extractedDate);
         //TEMPORARY DATE FOR TESTING, REMOVE LATER
         //extractedDate = "December,2016";
         return new Date(extractedDate[0] + ' 1, ' + extractedDate[1] + ' 07:00:00');

@@ -23,7 +23,7 @@ export class SqlDataAccess {
     }
 
     protected retryQuery(fn){
-        var maxRetries = 3;
+        var maxRetries = 10;
         var currentRetries = 0;
         while(currentRetries < maxRetries){
             try {
