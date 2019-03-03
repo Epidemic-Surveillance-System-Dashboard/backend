@@ -12,6 +12,7 @@ export abstract class UserCredentialService {
     }
 
     public static compare(plaintextPassword:string, hashedPassword: string): Promise<any> {
+        console.log("compare");
         return bcrypt.compare(plaintextPassword, hashedPassword).then((result) => {
             return result;
         });

@@ -61,9 +61,10 @@ router.post('/login', (req: Request, res: Response) => {
     var body = req.body;
     if(body.email && body.password){
         var userCredentialManager = new UserCredentialManager();
-       // userCredentialManager.login(body.email, body.password).then((result) => {
-            res.json("hello world");
-      //  });
+        userCredentialManager.login(body.email, body.password).then((result) => {
+            
+        });
+        res.json("hello world");
     }
     else{
         res.status(400);
