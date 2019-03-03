@@ -40,7 +40,7 @@ router.get('/getAllUsers/:userId', async (req: Request, res: Response) => {
     });
 });
 
-router.post('/registerUser', (req: Request, res: Response) => {
+router.post('/register', (req: Request, res: Response) => {
     var body = req.body;
 
     if(body.FirstName && body.LastName && body.Phone && body.Email && 
@@ -59,11 +59,11 @@ router.post('/registerUser', (req: Request, res: Response) => {
 
 router.post('/login', async (req: Request, res: Response) => {
     var body = req.body;
-    if(body.email && body.password){
+    if(body.Email && body.Password){
         var userCredentialManager = new UserCredentialManager();
-        var result = await userCredentialManager.login(body.email, body.password);
-        res.json("hello world");
-        
+        userCredentialManager.login(body.Email, body.Password).then((result) => {
+            res.json(result);   
+        });
     }
     else{
         res.status(400);

@@ -60,7 +60,6 @@ export class UserManager {
             var result = await userDataAccess.insertUser(email, firstName, lastName, phone, userType);
             var userCredentialService = new UserCredentialService();
             var hashedPassword = await userCredentialService.encrypt(this.plaintextPassword);
-            console.log("hashed password1: " + hashedPassword);
             await userCredentialDataAccess.insertUserCredential(email, hashedPassword, new Date());
             await userLocationDataAccess.insertUserLocation(email, locationId, locationType, result.recordsets[0][0].Id);
             return result.recordsets[0][0];
