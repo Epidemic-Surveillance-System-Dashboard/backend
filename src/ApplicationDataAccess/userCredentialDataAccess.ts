@@ -12,14 +12,10 @@ export class UserCredentialDataAccess extends SqlDataAccess{
             return pool.request()
             .input('email', mssql.NVarChar, email)
             .input('passwordHash', mssql.NVarChar, passwordHash)
-            .input('dateUpdated', mssql.BigInt, dateUpdated)
-            .query(`IF NOT EXISTS(SELECT * FROM UserCredentials WHERE Email = @userId)
+            .input('dateUpdated', mssql.DateTime, dateUpdated)
+            .query(`IF NOT EXISTS(SELECT * FROM UserCredentials WHERE Email = @email)
             BEGIN
-              INSERT INTO UserCredentials (Email, PasswordHash, DateUpdated) VALUES (@email, @passwordHas, @dateUpdated) select SCOPE_IDENTITY() as Id
-            END
-            ELSE
-            BEGIN
-              SELECT Id FROM UserCredentials WHERE Email = @email
+              INSERT INTO UserCredentials (Email, PasswordHash, DateUpdated) VALUES (@email, @passwordHash, @dateUpdated) select SCOPE_IDENTITY() as Id
             END`);
         });
     }
@@ -27,7 +23,7 @@ export class UserCredentialDataAccess extends SqlDataAccess{
     public getUserCredential(email: string){
         return SqlDataAccess.sqlPool.then(pool => {
             return pool.request()
-            .input('email', mssql.BigInt, email)
+            .input('email', mssql.NVarChar, email)
             .query('SELECT * FROM UserCredentials WHERE Email = @email;');
         });
     }

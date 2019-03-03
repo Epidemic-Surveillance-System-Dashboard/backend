@@ -1,5 +1,6 @@
 import { Router, Request, Response } from 'express';
 import { UserManager } from '../userManager';
+import { UserCredentialManager } from '../userCredentialManager';
 
 const router: Router = Router();
 
@@ -29,7 +30,7 @@ router.get('/getAllUsers/:userId', async (req: Request, res: Response) => {
     });
 });
 
-router.post('/addUser', (req: Request, res: Response) => {
+router.post('/registerUser', (req: Request, res: Response) => {
     var body = req.body;
 
     if(body.FirstName && body.LastName && body.Phone && body.Email && 
@@ -37,6 +38,20 @@ router.post('/addUser', (req: Request, res: Response) => {
         var userManager = new UserManager();
         userManager.addUser(body.Email, body.FirstName, body.LastName, body.Phone, body.UserType, 
             body.LocationId, body.LocationType).then((result) => {
+            res.json(result);
+        });
+    }
+    else{
+        res.status(400);
+        res.json({"error": "invalid data"});
+    }
+});
+
+router.post('/login', (req: Request, res: Response) => {
+    var body = req.body;
+    if(body.email && body.password){
+        var userCredentialManager = new UserCredentialManager();
+        userCredentialManager.login(body.email, body.password).then((result) => {
             res.json(result);
         });
     }
