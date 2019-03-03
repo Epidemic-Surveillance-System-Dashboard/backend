@@ -1,4 +1,6 @@
 import { UsersDataAccess } from '../ApplicationDataAccess/usersDataAccess';
+import { UserCredentialDataAccess } from '../ApplicationDataAccess/userCredentialDataAccess';
+import { UserCredentialService } from './userCredentialService';
 import { UserLocationDataAccess } from '../ApplicationDataAccess/userLocationDataAccess';
 import * as config from 'config';
 
@@ -7,6 +9,7 @@ export class UserManager {
     constructor(){
 
     }
+    private plaintextPassword: string = "essd123";
 
     public async getUserById(userId: number){
         var userDataAccess = new UsersDataAccess(config.get('sqlConfig'));
@@ -28,7 +31,6 @@ export class UserManager {
     public async getAllUsers(userId: number){
         var userDataAccess = new UsersDataAccess(config.get('sqlConfig'));
         var userLocationDataAccess = new UserLocationDataAccess(config.get('sqlConfig'));
-
         var userLocationResult = await userLocationDataAccess.getUserLocation(userId);
 
         if(userLocationResult.rowsAffected[0] == 0){
@@ -51,10 +53,14 @@ export class UserManager {
         userType: string, locationId: number, locationType: string){
         var userDataAccess = new UsersDataAccess(config.get('sqlConfig'));
         var userLocationDataAccess = new UserLocationDataAccess(config.get('sqlConfig'));
+        var userCredentialDataAccess = new UserCredentialDataAccess(config.get('sqlConfig'));
         var user = await userDataAccess.getUserByEmail(email);
 
         if(user.recordsets[0].length == 0){
             var result = await userDataAccess.insertUser(email, firstName, lastName, phone, userType);
+            var hashedPassword = await UserCredentialService.encrypt(this.plaintextPassword);
+            console.log("hashed password1: " + hashedPassword);
+            await userCredentialDataAccess.insertUserCredential(email, hashedPassword, new Date());
             await userLocationDataAccess.insertUserLocation(email, locationId, locationType, result.recordsets[0][0].Id);
             return result.recordsets[0][0];
         }
