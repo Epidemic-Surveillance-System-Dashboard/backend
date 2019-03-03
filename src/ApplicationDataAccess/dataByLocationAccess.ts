@@ -30,7 +30,7 @@ export class DataByLocationAccess extends SqlDataAccess {
     getDataByState(state: string) {
         return SqlDataAccess.sqlPool.then(pool => {
             return pool.request()
-            .query("Select * FROM Data WHERE FacilityId IN (Select FacilityId FROM FacilityView WHERE StateName = " + state + ");"
+            .query("Select * FROM Data WHERE FacilityId IN (Select FacilityId FROM FacilityView WHERE StateName = '" + state + "');"
             /*+`Select * FROM "Sets";
             Select * FROM Groups;
             Select * FROM Metrics;`*/
@@ -41,7 +41,7 @@ export class DataByLocationAccess extends SqlDataAccess {
     getDataByLga(state: string, lga: string) {
         return SqlDataAccess.sqlPool.then(pool => {
             return pool.request()
-            .query(`Select * FROM Data WHERE FacilityId IN (Select FacilityId FROM FacilityView WHERE StateName = ${state} AND LGAName = ${lga});`
+            .query(`Select * FROM Data WHERE FacilityId IN (Select FacilityId FROM FacilityView WHERE StateName = '${state}' AND LGAName = '${lga}');`
             // .query(
             // "Select * FROM Data WHERE FacilityId IN (Select Id FROM FacilityView WHERE LGAId = (Select Id FROM LGA WHERE \"Name\" = '" + lga + "' AND StateId = (Select Id FROM State WHERE \"Name\" = '" + state + "')))"
             /*+`Select * FROM "Sets";
@@ -54,7 +54,7 @@ export class DataByLocationAccess extends SqlDataAccess {
     getDataByWard(state: string, lga: string, ward: string) {
         return SqlDataAccess.sqlPool.then(pool => {
             return pool.request()
-            .query(`Select * FROM Data WHERE FacilityId IN (Select FacilityId FROM FacilityView WHERE StateName = ${state} AND LGAName = ${lga} AND WardName = ${ward});`
+            .query(`Select * FROM Data WHERE FacilityId IN (Select FacilityId FROM FacilityView WHERE StateName = '${state}' AND LGAName = '${lga}' AND WardName = '${ward}');`
             // .query(
             // "Select * FROM Data WHERE FacilityId IN (Select Id FROM FacilityView WHERE WardId = (Select Id FROM Ward WHERE \"Name\" = '" + ward + "') AND LGAId = (Select Id FROM LGA WHERE \"Name\" = '"+ lga +"' AND StateId = (Select Id FROM State WHERE \"Name\" = '"+state+"')))"
             /*+`Select * FROM "Sets";
@@ -67,7 +67,7 @@ export class DataByLocationAccess extends SqlDataAccess {
     getDataByFacility(state: string, lga: string, ward: string, facility: string) {
         return SqlDataAccess.sqlPool.then(pool => {
             return pool.request()
-            .query(`Select * FROM Data WHERE FacilityId IN (Select FacilityId FROM FacilityView WHERE StateName = ${state} AND LGAName = ${lga} AND WardName = ${ward} AND FacilityName = ${facility});`
+            .query(`Select * FROM Data WHERE FacilityId IN (Select FacilityId FROM FacilityView WHERE StateName = '${state}' AND LGAName = '${lga}' AND WardName = '${ward}' AND FacilityName = '${facility}');`
             // .query("Select * FROM Data WHERE FacilityId IN (Select Id FROM FacilityView WHERE FacilityId = (Select Id FROM Facility WHERE \"Name\" = '"+facility+"') AND WardId = (Select Id FROM Ward WHERE \"Name\" = '"+ward+"') AND LGAId = (Select Id FROM LGA WHERE \"Name\" = '"+lga+"' AND StateId = (Select Id FROM State WHERE \"Name\" = '"+state+"')))"
             /*+`Select * FROM "Sets";
             Select * FROM Groups;
