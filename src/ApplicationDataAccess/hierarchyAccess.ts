@@ -1,6 +1,4 @@
 import { SqlDataAccess } from '../DataAccess/sqlDataAccess';
-import * as mssql from 'mssql';
-import * as config from 'config';
 
 export class HierarchyAccess extends SqlDataAccess {
 

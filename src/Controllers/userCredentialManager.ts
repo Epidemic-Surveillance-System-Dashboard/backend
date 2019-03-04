@@ -5,9 +5,7 @@ import * as config from 'config';
 
 export class UserCredentialManager {
 
-    constructor(){
-
-    }
+    constructor(){}
 
     public async login(email: string, plaintextPassword: string){
         var userCredentialDataAccess = new UserCredentialDataAccess(config.get('sqlConfig'));

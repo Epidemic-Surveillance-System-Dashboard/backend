@@ -35,5 +35,4 @@ export class LGADataAccess extends SqlDataAccess {
             .query('SELECT Id FROM LGA WHERE Name = @lga;');
         });
     }
-
 }

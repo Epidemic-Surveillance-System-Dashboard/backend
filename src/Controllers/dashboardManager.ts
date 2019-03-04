@@ -4,9 +4,7 @@ import * as config from 'config';
 
 export class DashboardManager {
 
-    constructor(){
-
-    }
+    constructor(){}
 
     public async getDashboardConfig(userId: number){
         var dashbaordDataAccess = new DashboardDataAccess(config.get('sqlConfig'));
@@ -25,12 +23,10 @@ export class DashboardManager {
         if(userResult.recordsets[0].length == 0){
             return {"error": "user does not exist"};
         }
-
         var dashboardResult = await dashbaordDataAccess.getDashboardConfig(userId);
         if(dashboardResult.recordsets[0].length == 0){
             return {"error": "A dashboard for this user already exists."};
         }
-
         var result = await dashbaordDataAccess.insertDashboardConfig(email, dashboardJson, userId);
         return result.recordsets[0][0];
     }
@@ -46,5 +42,4 @@ export class DashboardManager {
             return {"result": "user does not exist"};
         }
     }
-
 }

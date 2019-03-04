@@ -36,5 +36,4 @@ export class WardDataAccess extends SqlDataAccess {
             .query('SELECT Id FROM Ward WHERE Name = @ward');
         });
     }
-
 }

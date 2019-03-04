@@ -1,5 +1,4 @@
 import { SqlDataAccess } from './sqlDataAccess';
-import * as config from 'config';
 import * as mssql from 'mssql';
 
 export class StateDataAccess extends SqlDataAccess{

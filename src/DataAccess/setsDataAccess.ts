@@ -26,7 +26,6 @@ export class SetsDataAccess extends SqlDataAccess {
                 COMMIT TRAN`);
             });
         });
-        
     }
 
     getSetId(name: string){
@@ -36,5 +35,4 @@ export class SetsDataAccess extends SqlDataAccess {
             .query('SELECT Id FROM Sets WHERE SetName = @name');
         });
     }
-
 }

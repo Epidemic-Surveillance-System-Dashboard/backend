@@ -7,7 +7,6 @@ export class SqlDataAccess {
     constructor(config){
         if(SqlDataAccess.sqlPool == null || SqlDataAccess.sqlPool == undefined){
             SqlDataAccess.sqlPool = new mssql.ConnectionPool(JSON.parse(JSON.stringify(config))).connect();
-
         }
     }
 
@@ -39,7 +38,6 @@ export class SqlDataAccess {
                     delayRound++;
                 }
                 await this.sleep(delay);
-                
             }
         }
     }

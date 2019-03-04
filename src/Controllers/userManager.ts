@@ -6,9 +6,8 @@ import * as config from 'config';
 
 export class UserManager {
 
-    constructor(){
+    constructor(){}
 
-    }
     private plaintextPassword: string = "essd123";
 
     public async getUserById(userId: number){
@@ -34,19 +33,19 @@ export class UserManager {
         var userLocationResult = await userLocationDataAccess.getUserLocation(userId);
 
         if(userLocationResult.rowsAffected[0] == 0){
-            return {"error": "User is not assigned to any locations"};
+            return { "error": "User is not assigned to any locations" };
         }
 
         var userLocation = userLocationResult.recordsets[0][0];
         if(userLocation.LocationType.toLowerCase() == 'facility'){
-            return {"error": "user is a facility level user"};
+            return { "error": "user is a facility level user" };
         }
 
         var childLocationIdsResult = await userLocationDataAccess.getAllChildLocationIds(parseInt(userLocation.LocationId), userLocation.LocationType);
         var childLocationIds = this.parseChildLocationIds(childLocationIdsResult.recordsets[0]);
         var userIdsResult = await userLocationDataAccess.getUserIdsFromLocationIds(childLocationIds);
         var users = await userDataAccess.getUsersById(this.convertUserIdsToIntArray(userIdsResult.recordsets[0]));
-        return {"users": users.recordsets[0]};
+        return { "users": users.recordsets[0] };
     }
 
     public async addUser(email: string, firstName: string, lastName: string, phone: string, 
@@ -73,10 +72,10 @@ export class UserManager {
         var userDataAccess = new UsersDataAccess(config.get('sqlConfig'));
         var result = await userDataAccess.deleteUserById(userId);
         if(result.rowsAffected[0] > 0){
-            return {"result": "delete success"};
+            return { "result": "delete success" };
         }
         else {
-            return {"result": "user does not exist"};
+            return { "result": "user does not exist" };
         }
     }
 
@@ -87,17 +86,16 @@ export class UserManager {
         var userLocationResult = await userLocationDataAccess.updateUserLocation(userId, locationId, locationType);
         
         if(userDataResult.rowsAffected[0] == 0){
-            return {"result": "User does not exist"};
+            return { "result": "User does not exist" };
         }
 
         if(userLocationResult.rowsAffected[0] == 0){
             var result = await userLocationDataAccess.insertUserLocation(email, locationId, locationType, userId);
             if(result.rowsAffected[0] == 0){
-                return {"result": "Failed to update user location"};
+                return { "result": "Failed to update user location" };
             }
         }
-
-        return {"result": "Update successful"};
+        return { "result": "Update successful" };
     }
 
     private parseChildLocationIds(rawChildLocationIds){
@@ -119,7 +117,6 @@ export class UserManager {
                 facilityIds.push(facilityId);
             }
         }
-
         return  {
             lgaIds,
             wardIds,
@@ -134,6 +131,4 @@ export class UserManager {
         }
         return ids;
     }
-
-
 }

@@ -36,5 +36,4 @@ export class MetricsDataAccess extends SqlDataAccess {
             .query('SELECT Id FROM Metrics WHERE MetricName = @name');
         });
     }
-
 }

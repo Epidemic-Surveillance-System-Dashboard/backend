@@ -34,5 +34,4 @@ export class GroupsDataAccess extends SqlDataAccess {
             .query('SELECT Id FROM Groups WHERE GroupName = @name');
         });
     }
-
 }
