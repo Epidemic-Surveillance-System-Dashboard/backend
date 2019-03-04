@@ -26,7 +26,7 @@ export class HierarchyAccess extends SqlDataAccess {
             .query(
                 `SELECT GroupName AS Name, Id From Groups AS Id;
                 SELECT SetName AS Name, Id, GroupId AS parentId FROM "Sets";
-                SELECT MetricName AS Name, Id, SetId AS parentId FROM Metrics;`
+                SELECT MetricName AS Name, Id, SetId AS parentId, RelativeOrder FROM Metrics;`
             );            
         });
     }

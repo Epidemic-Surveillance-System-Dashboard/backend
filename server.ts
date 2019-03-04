@@ -1,6 +1,6 @@
 import * as express from 'express';
 
-import { DataRoutes } from './src/controllers/dataRoutes';
+import { DataRoutes } from './src/Controllers/routes/dataRoutes';
 import { UserRoutes } from './src/Controllers/routes/userRoutes';
 import { DashboardRoutes } from './src/Controllers/routes/dashboardRoutes';
 

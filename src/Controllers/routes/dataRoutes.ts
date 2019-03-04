@@ -1,6 +1,6 @@
 import {Router, Request, Response} from 'express';
-import { DataByLocationAccess } from '../ApplicationDataAccess/dataByLocationAccess';
-import { HierarchyAccess } from '../ApplicationDataAccess/hierarchyAccess';
+import { DataByLocationAccess } from '../../ApplicationDataAccess/dataByLocationAccess';
+import { HierarchyAccess } from '../../ApplicationDataAccess/hierarchyAccess';
 import * as config from 'config';
 
 const router: Router = Router();
