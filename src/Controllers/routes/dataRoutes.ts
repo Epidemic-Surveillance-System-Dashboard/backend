@@ -74,7 +74,7 @@ router.get('/data/hierarchy', (req: Request, res: Response) => {
 router.get('/data/query', (req: Request, res: Response) => {
     var dataManager = new DataManager();
     dataManager.getDataForSameYear(req.query.LocationId, req.query.LocationType, 
-        req.query.DataId, req.query.DataType, req.query.StartDate, req.query.EndDate, req.query.Period, req.query.distribution).then((result) => {
+        req.query.DataId, req.query.DataType, req.query.StartDate, req.query.EndDate, req.query.Period, req.query.Distribution).then((result) => {
 
         res.json(result);
     });
