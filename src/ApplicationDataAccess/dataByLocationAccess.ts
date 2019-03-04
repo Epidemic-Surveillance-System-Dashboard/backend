@@ -28,7 +28,7 @@ export class DataByLocationAccess extends SqlDataAccess {
     getDataByState(state: string) {
         return SqlDataAccess.sqlPool.then(pool => {
             return pool.request()
-            .query(`Select * FROM Data WHERE FacilityId IN (Select FacilityId FROM FacilityView WHERE StateName = '${state}');`
+            .query(`Select Id, MetricId, FacilityId, Value, NewTime as Time FROM Data WHERE FacilityId IN (Select FacilityId FROM FacilityView WHERE StateName = '${state}');`
             );            
         });
     }
@@ -36,7 +36,7 @@ export class DataByLocationAccess extends SqlDataAccess {
     getDataByLga(state: string, lga: string) {
         return SqlDataAccess.sqlPool.then(pool => {
             return pool.request()
-            .query(`Select * FROM Data WHERE FacilityId IN (Select FacilityId FROM FacilityView WHERE StateName = '${state}' AND LGAName = '${lga}');`
+            .query(`Select Id, MetricId, FacilityId, Value, NewTime as Time FROM Data WHERE FacilityId IN (Select FacilityId FROM FacilityView WHERE StateName = '${state}' AND LGAName = '${lga}');`
             );            
         });
     }
@@ -44,7 +44,7 @@ export class DataByLocationAccess extends SqlDataAccess {
     getDataByWard(state: string, lga: string, ward: string) {
         return SqlDataAccess.sqlPool.then(pool => {
             return pool.request()
-            .query(`Select * FROM Data WHERE FacilityId IN (Select FacilityId FROM FacilityView WHERE StateName = '${state}' AND LGAName = '${lga}' AND WardName = '${ward}');`
+            .query(`Select Id, MetricId, FacilityId, Value, NewTime as Time FROM Data WHERE FacilityId IN (Select FacilityId FROM FacilityView WHERE StateName = '${state}' AND LGAName = '${lga}' AND WardName = '${ward}');`
             );            
         });
     }
@@ -52,7 +52,7 @@ export class DataByLocationAccess extends SqlDataAccess {
     getDataByFacility(state: string, lga: string, ward: string, facility: string) {
         return SqlDataAccess.sqlPool.then(pool => {
             return pool.request()
-            .query(`Select * FROM Data WHERE FacilityId IN (Select FacilityId FROM FacilityView WHERE StateName = '${state}' AND LGAName = '${lga}' AND WardName = '${ward}' AND FacilityName = '${facility}');`
+            .query(`Select Id, MetricId, FacilityId, Value, NewTime as Time FROM Data WHERE FacilityId IN (Select FacilityId FROM FacilityView WHERE StateName = '${state}' AND LGAName = '${lga}' AND WardName = '${ward}' AND FacilityName = '${facility}');`
             );            
         });
     }
