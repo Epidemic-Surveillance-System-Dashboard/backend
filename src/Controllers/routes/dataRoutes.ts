@@ -1,6 +1,7 @@
 import {Router, Request, Response} from 'express';
 import { DataByLocationAccess } from '../../ApplicationDataAccess/dataByLocationAccess';
 import { HierarchyAccess } from '../../ApplicationDataAccess/hierarchyAccess';
+import { DataManager } from '../dataManager';
 import * as config from 'config';
 
 const router: Router = Router();
@@ -68,6 +69,15 @@ router.get('/data/hierarchy', (req: Request, res: Response) => {
             res.send("Bad Request");
         }
     }); 
+});
+//paramter for distribution: total/none(run queries as is). If distribution do other stuff
+router.get('/data/query', (req: Request, res: Response) => {
+    var dataManager = new DataManager();
+    dataManager.getDataForSameYear(req.query.LocationId, req.query.LocationType, 
+        req.query.DataId, req.query.DataType, req.query.StartDate, req.query.EndDate, req.query.Period, req.query.distribution).then((result) => {
+
+        res.json(result);
+    });
 });
 
 export const DataRoutes: Router = router;
