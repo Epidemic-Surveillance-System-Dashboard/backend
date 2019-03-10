@@ -72,7 +72,7 @@ export class DataByLocationAccess extends SqlDataAccess {
             where ${dataFieldObj.fieldName} = @dataId
             and data.NewTime >= @startDate 
             and data.NewTime <= @endDate
-            group by Datepart(month, data.NewTime) ${distributionSqlTextObj.distributionSqlGroupByText}
+            group by Datepart(month, data.NewTime) ${distributionSqlTextObj.distributionSqlGroupByText}, MetricView.RelativeOrder
             Order by Datepart(month, data.NewTime), MetricView.RelativeOrder`
             );            
         });
@@ -92,7 +92,7 @@ export class DataByLocationAccess extends SqlDataAccess {
             where ${dataFieldObj.fieldName} = @dataId
             and data.NewTime >= @startDate
             and data.NewTime <= @endDate
-            group by DatePart(year, data.NewTime) ${distributionSqlTextObj.distributionSqlGroupByText}
+            group by DatePart(year, data.NewTime) ${distributionSqlTextObj.distributionSqlGroupByText}, MetricView.RelativeOrder
              Order by Datepart(year, data.NewTime), MetricView.RelativeOrder`
             );            
         });
@@ -115,7 +115,7 @@ export class DataByLocationAccess extends SqlDataAccess {
             and ${dataFieldObj.fieldName} = @dataId
             and data.NewTime >= @startDate 
             and data.NewTime <= @endDate
-            group by Datepart(month, data.NewTime) ${distributionSqlTextObj.distributionSqlGroupByText}
+            group by Datepart(month, data.NewTime) ${distributionSqlTextObj.distributionSqlGroupByText}, MetricView.RelativeOrder
             order by Datepart(month, data.NewTime), MetricView.RelativeOrder`
             );            
         });
@@ -138,7 +138,7 @@ export class DataByLocationAccess extends SqlDataAccess {
             and ${dataFieldObj.fieldName} = @dataId
             and data.NewTime >= @startDate
             and data.NewTime <= @endDate
-            group by DatePart(year, data.NewTime) ${distributionSqlTextObj.distributionSqlGroupByText}
+            group by DatePart(year, data.NewTime) ${distributionSqlTextObj.distributionSqlGroupByText}, MetricView.RelativeOrder
             order by DatePart(year, data.NewTime), MetricView.RelativeOrder`
             );            
         });
