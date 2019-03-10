@@ -46,6 +46,12 @@ export class DashboardManager {
         else {
 
             var userResult = await usersDataAccess.getUserById(userId);
+            if(userResult.rowsAffected[0] == 0){
+                return {
+                    "success": false,
+                    "result": "User does not exist"
+                };
+            }
             var insertResult = await dashbaordDataAccess.insertDashboardConfig(userResult.recordsets[0][0].Email, dashboardJson, userId);
 
             if(insertResult.rowsAffected[0] > 0){
@@ -57,7 +63,7 @@ export class DashboardManager {
             else{
                 return {
                     "success": false,
-                    "result": "something went wrong"
+                    "result": "Something went wrong"
                 };
             }
             
