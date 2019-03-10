@@ -18,4 +18,13 @@ export class FacilityViewDataAccess extends SqlDataAccess {
         });
     }
 
+    getLocationName(locationId: number, locationType: string){
+        console.log(locationType+"Name");
+        return SqlDataAccess.sqlPool.then(pool => {
+            return pool.request()
+            .input('locationId', mssql.BigInt, locationId)
+            .query(`Select ${locationType}Name from FacilityView where ${locationType}Id = @locationId`);
+        });
+    }
+
 }

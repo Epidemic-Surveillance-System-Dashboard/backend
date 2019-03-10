@@ -2,6 +2,7 @@ import { UsersDataAccess } from '../ApplicationDataAccess/usersDataAccess';
 import { UserCredentialDataAccess } from '../ApplicationDataAccess/userCredentialDataAccess';
 import { UserCredentialService } from './userCredentialService';
 import { UserLocationDataAccess } from '../ApplicationDataAccess/userLocationDataAccess';
+import { FacilityViewDataAccess } from '../DataAccess/facilityViewDataAccess';
 import * as config from 'config';
 
 export class UserManager {
@@ -53,6 +54,7 @@ export class UserManager {
         var userDataAccess = new UsersDataAccess(config.get('sqlConfig'));
         var userLocationDataAccess = new UserLocationDataAccess(config.get('sqlConfig'));
         var userCredentialDataAccess = new UserCredentialDataAccess(config.get('sqlConfig'));
+        var facilityViewDataAccess = new FacilityViewDataAccess(config.get('sqlConfig'));
         var user = await userDataAccess.getUserByEmail(email);
 
         if(user.recordsets[0].length == 0){
@@ -60,7 +62,8 @@ export class UserManager {
             var userCredentialService = new UserCredentialService();
             var hashedPassword = await userCredentialService.encrypt(this.plaintextPassword);
             await userCredentialDataAccess.insertUserCredential(email, hashedPassword, new Date());
-            await userLocationDataAccess.insertUserLocation(email, locationId, locationType, result.recordsets[0][0].Id);
+            var locationName = await facilityViewDataAccess.getLocationName(locationId, locationType);
+            await userLocationDataAccess.insertUserLocation(email, locationId, locationType, result.recordsets[0][0].Id, locationName.recordsets[0][0][locationType+"Name"]);
             return result.recordsets[0][0];
         }
         else{
@@ -84,13 +87,17 @@ export class UserManager {
         var userLocationDataAccess = new UserLocationDataAccess(config.get('sqlConfig'));
         var userDataResult = await userDataAccess.updateUser(userId, email, firstName, lastName, phone, userType);
         var userLocationResult = await userLocationDataAccess.updateUserLocation(userId, locationId, locationType);
-        
+        var facilityViewDataAccess = new FacilityViewDataAccess(config.get('sqlConfig'));
+
         if(userDataResult.rowsAffected[0] == 0){
             return { "result": "User does not exist" };
         }
 
+        var locationName = await facilityViewDataAccess.getLocationName(locationId, locationType);
+        console.log(locationName);
+
         if(userLocationResult.rowsAffected[0] == 0){
-            var result = await userLocationDataAccess.insertUserLocation(email, locationId, locationType, userId);
+            var result = await userLocationDataAccess.insertUserLocation(email, locationId, locationType, userId, locationName);
             if(result.rowsAffected[0] == 0){
                 return { "result": "Failed to update user location" };
             }
