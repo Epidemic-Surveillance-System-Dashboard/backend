@@ -73,7 +73,7 @@ export class DataByLocationAccess extends SqlDataAccess {
             and data.NewTime >= @startDate 
             and data.NewTime <= @endDate
             group by Datepart(month, data.NewTime) ${distributionSqlTextObj.distributionSqlGroupByText}
-            Order by Datepart(month, data.NewTime)`
+            Order by Datepart(month, data.NewTime), MetricView.RelativeOrder`
             );            
         });
     }
@@ -93,7 +93,7 @@ export class DataByLocationAccess extends SqlDataAccess {
             and data.NewTime >= @startDate
             and data.NewTime <= @endDate
             group by DatePart(year, data.NewTime) ${distributionSqlTextObj.distributionSqlGroupByText}
-             Order by Datepart(year, data.NewTime)`
+             Order by Datepart(year, data.NewTime), MetricView.RelativeOrder`
             );            
         });
     }
@@ -116,7 +116,7 @@ export class DataByLocationAccess extends SqlDataAccess {
             and data.NewTime >= @startDate 
             and data.NewTime <= @endDate
             group by Datepart(month, data.NewTime) ${distributionSqlTextObj.distributionSqlGroupByText}
-            order by Datepart(month, data.NewTime)`
+            order by Datepart(month, data.NewTime), MetricView.RelativeOrder`
             );            
         });
     }
@@ -139,7 +139,7 @@ export class DataByLocationAccess extends SqlDataAccess {
             and data.NewTime >= @startDate
             and data.NewTime <= @endDate
             group by DatePart(year, data.NewTime) ${distributionSqlTextObj.distributionSqlGroupByText}
-            order by DatePart(year, data.NewTime)`
+            order by DatePart(year, data.NewTime), MetricView.RelativeOrder`
             );            
         });
     }

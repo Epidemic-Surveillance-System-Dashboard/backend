@@ -13,7 +13,7 @@ export class HierarchyAccess extends SqlDataAccess {
                 `SELECT "Name", Id FROM State;
                 SELECT "Name", Id, StateId AS parentId FROM Lga;
                 SELECT "Name", Id, LgaId AS parentId FROM Ward;
-                SELECT "Name", Id, WardId AS parentId FROM Facility;`
+                SELECT "Name", Id, WardId AS parentId, MetricsReportedInLastYear FROM Facility;`
             );            
         });
     }
