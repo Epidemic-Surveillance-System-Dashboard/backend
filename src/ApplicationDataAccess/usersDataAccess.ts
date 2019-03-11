@@ -32,7 +32,8 @@ export class UsersDataAccess extends SqlDataAccess{
         return SqlDataAccess.sqlPool.then(pool => {
             return pool.request()
             .input('email', mssql.NVarChar, email)
-            .query('SELECT * FROM Users WHERE Email = @email;');
+            .query(`SELECT u.Id, u.Email, u.FirstName, u.LastName, u.Phone, u.UserType, ul.LocationId, ul.LocationType, u.DateCreated, u.DateUpdated FROM 
+            (SELECT * FROM Users WHERE Email = @email) AS u LEFT JOIN UserLocation ul on u.Id = ul.UserId;`);
         });
     }
 
