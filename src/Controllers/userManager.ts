@@ -64,7 +64,7 @@ export class UserManager {
             await userCredentialDataAccess.insertUserCredential(email, hashedPassword, new Date());
             var locationName = await facilityViewDataAccess.getLocationName(locationId, locationType);
             await userLocationDataAccess.insertUserLocation(email, locationId, locationType, result.recordsets[0][0].Id, locationName.recordsets[0][0][locationType+"Name"]);
-            return result.recordsets[0][0];
+            return {"Id": result.recordsets[0][0].Id, "LocationName": locationName.recordsets[0][0][locationType+"Name"]};
         }
         else{
             return {"error": "user already exists"};
