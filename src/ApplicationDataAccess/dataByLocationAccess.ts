@@ -146,7 +146,7 @@ export class DataByLocationAccess extends SqlDataAccess {
             }
         }
         else{
-            query = `Select Sum(Data.Value) as Total, DatePart(year, data.newTime) as Yr from Data 
+            query = `Select Sum(Data.Value) as Total, DatePart(year, data.newTime) as Metric from Data 
             Join FacilityView on Data.FacilityId = FacilityView.FacilityId
             Join MetricView on Data.MetricId = MetricView.MetricId
             where ${locationFieldName} = @locationId
