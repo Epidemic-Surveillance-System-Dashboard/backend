@@ -122,7 +122,7 @@ export class DataByLocationAccess extends SqlDataAccess {
                 case "set":
                     //Group By Metric Name and Sort by Relative Order
                     query = `
-                    Select Sum(Data.Value) as Total, MetricView.MetricName, MetricView.RelativeOrder from Data 
+                    Select Sum(Data.Value) as Total, MetricView.MetricName as Metric, MetricView.RelativeOrder from Data 
                     Join FacilityView on Data.FacilityId = FacilityView.FacilityId
                     Join MetricView on Data.MetricId = MetricView.MetricId
                     where ${locationFieldName} = @locationId
@@ -134,7 +134,7 @@ export class DataByLocationAccess extends SqlDataAccess {
                     break;
                 case "group":
                     //Group by Set Name
-                    query = `Select Sum(Data.Value) as Total, MetricView.SetName from Data 
+                    query = `Select Sum(Data.Value) as Total, MetricView.SetName as Metric, from Data 
                     Join FacilityView on Data.FacilityId = FacilityView.FacilityId
                     Join MetricView on Data.MetricId = MetricView.MetricId
                     where ${locationFieldName} = @locationId
@@ -146,7 +146,7 @@ export class DataByLocationAccess extends SqlDataAccess {
             }
         }
         else{
-            query = `Select Sum(Data.Value) as Total, DatePart(year, data.newTime) from Data 
+            query = `Select Sum(Data.Value) as Total, DatePart(year, data.newTime) as Yr from Data 
             Join FacilityView on Data.FacilityId = FacilityView.FacilityId
             Join MetricView on Data.MetricId = MetricView.MetricId
             where ${locationFieldName} = @locationId
