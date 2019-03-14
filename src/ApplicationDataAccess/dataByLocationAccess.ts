@@ -60,47 +60,33 @@ export class DataByLocationAccess extends SqlDataAccess {
 
     getDataQueryForSameYearNational(dataId: number, dataFieldObj: any, startDate: Date, endDate: Date, isDistribution: boolean){
         
-        var distributionSqlTextObj = this.getDistributionSqlText(dataFieldObj.dataType, isDistribution);
+        var query = this.getDistributionSqlTextNational(dataFieldObj.dataType, isDistribution, dataFieldObj.dataFieldName);
 
         return SqlDataAccess.sqlPool.then(pool => {
             return pool.request()
             .input('dataId', mssql.BigInt, dataId)
             .input('startDate', mssql.Date, startDate)
             .input('endDate', mssql.Date, endDate)
-            .query(`Select Sum(Data.Value) as Total, Datepart(month, data.NewTime) as Month ${distributionSqlTextObj.distributionSqlSelectText} from Data
-            Join MetricView on Data.MetricId = MetricView.MetricId
-            where ${dataFieldObj.fieldName} = @dataId
-            and data.NewTime >= @startDate 
-            and data.NewTime <= @endDate
-            group by Datepart(month, data.NewTime) ${distributionSqlTextObj.distributionSqlGroupByText}, MetricView.RelativeOrder
-            Order by Datepart(month, data.NewTime), MetricView.RelativeOrder`
-            );            
+            .query(query);            
         });
     }
 
     getDataQueryNational(dataId: number, dataFieldObj: any, startDate: Date, endDate: Date, isDistribution: boolean){
        
-        var distributionSqlTextObj = this.getDistributionSqlText(dataFieldObj.dataType, isDistribution);
+        var query = this.getDistributionSqlTextNational(dataFieldObj.dataType, isDistribution, dataFieldObj.dataFieldName);
 
         return SqlDataAccess.sqlPool.then(pool => {
             return pool.request()
             .input('dataId', mssql.BigInt, dataId)
             .input('startDate', mssql.Date, startDate)
             .input('endDate', mssql.Date, endDate)
-            .query(`Select Sum(Data.Value) as Total, DatePart(year, data.NewTime) as Yr ${distributionSqlTextObj.distributionSqlSelectText} from Data 
-            Join MetricView on Data.MetricId = MetricView.MetricId
-            where ${dataFieldObj.fieldName} = @dataId
-            and data.NewTime >= @startDate
-            and data.NewTime <= @endDate
-            group by DatePart(year, data.NewTime) ${distributionSqlTextObj.distributionSqlGroupByText}, MetricView.RelativeOrder
-             Order by Datepart(year, data.NewTime), MetricView.RelativeOrder`
-            );            
+            .query(query);            
         });
     }
 
     getDataQueryForSameYear(locationId: number, locationObj: any, dataId: number, dataFieldObj: any, startDate: Date, endDate: Date, isDistribution: boolean){
 
-        var distributionSqlTextObj = this.getDistributionSqlText(dataFieldObj.dataType, isDistribution);
+        var query = this.getDistributionSqlText(dataFieldObj.dataType, isDistribution, locationObj.fieldName, dataFieldObj.fieldName);
 
         return SqlDataAccess.sqlPool.then(pool => {
             return pool.request()
@@ -108,22 +94,13 @@ export class DataByLocationAccess extends SqlDataAccess {
             .input('dataId', mssql.BigInt, dataId)
             .input('startDate', mssql.Date, startDate)
             .input('endDate', mssql.Date, endDate)
-            .query(`Select Sum(Data.Value) as Total, Datepart(month, data.NewTime) as Month ${distributionSqlTextObj.distributionSqlSelectText} from Data
-            Join FacilityView on Data.FacilityId = FacilityView.FacilityId
-            Join MetricView on Data.MetricId = MetricView.MetricId
-            where ${locationObj.fieldName} = @locationId
-            and ${dataFieldObj.fieldName} = @dataId
-            and data.NewTime >= @startDate 
-            and data.NewTime <= @endDate
-            group by Datepart(month, data.NewTime) ${distributionSqlTextObj.distributionSqlGroupByText}, MetricView.RelativeOrder
-            order by Datepart(month, data.NewTime), MetricView.RelativeOrder`
-            );            
+            .query(query);            
         });
     }
 
     getDataQuery(locationId: number, locationFieldObj: any, dataId: number, dataFieldObj: any, startDate: Date, endDate: Date, isDistribution: boolean){
         
-        var distributionSqlTextObj = this.getDistributionSqlText(dataFieldObj.dataType, isDistribution);
+        var distributionSqlTextObj = this.getDistributionSqlText(dataFieldObj.dataType, isDistribution, locationFieldObj.fieldName, dataFieldObj.fieldName);
         
         return SqlDataAccess.sqlPool.then(pool => {
             return pool.request()
@@ -131,37 +108,94 @@ export class DataByLocationAccess extends SqlDataAccess {
             .input('dataId', mssql.BigInt, dataId)
             .input('startDate', mssql.Date, startDate)
             .input('endDate', mssql.Date, endDate)
-            .query(`Select Sum(Data.Value) as Total, DatePart(year, data.NewTime) as Yr ${distributionSqlTextObj.distributionSqlSelectText} from Data 
-            Join FacilityView on Data.FacilityId = FacilityView.FacilityId
-            Join MetricView on Data.MetricId = MetricView.MetricId
-            where ${locationFieldObj.fieldName} = @locationId
-            and ${dataFieldObj.fieldName} = @dataId
-            and data.NewTime >= @startDate
-            and data.NewTime <= @endDate
-            group by DatePart(year, data.NewTime) ${distributionSqlTextObj.distributionSqlGroupByText}, MetricView.RelativeOrder
-            order by DatePart(year, data.NewTime), MetricView.RelativeOrder`
+            .query(distributionSqlTextObj
             );            
         });
     }
 
-    private getDistributionSqlText(dataType: string, isDistribution: boolean){
-        var sqlTextObj  = {
-            "distributionSqlSelectText": '',
-            "distributionSqlGroupByText": ''
-        };
+    private getDistributionSqlText(dataType: string, isDistribution: boolean, locationFieldName: string, dataFieldName: string ){
+        let query = ""
+                //Sum(Data.Value) as Total
         if(isDistribution){
             switch(dataType){
+                
                 case "set":
-                    sqlTextObj.distributionSqlSelectText = ', MetricView.MetricName';
-                    sqlTextObj.distributionSqlGroupByText = ', MetricView.MetricName';
+                    //Group By Metric Name and Sort by Relative Order
+                    query = `
+                    Select Sum(Data.Value) as Total, MetricView.MetricName, MetricView.RelativeOrder from Data 
+                    Join FacilityView on Data.FacilityId = FacilityView.FacilityId
+                    Join MetricView on Data.MetricId = MetricView.MetricId
+                    where ${locationFieldName} = @locationId
+                    and ${dataFieldName} = @dataId
+                    and data.NewTime >= @startDate
+                    and data.NewTime <= @endDate
+                    group by MetricView.MetricName, MetricView.RelativeOrder
+                    order by MetricView.RelativeOrder`
                     break;
                 case "group":
-                    sqlTextObj.distributionSqlSelectText = ', MetricView.SetName';
-                    sqlTextObj.distributionSqlGroupByText = ', MetricView.SetName';
+                    //Group by Set Name
+                    query = `Select Sum(Data.Value) as Total, MetricView.SetName from Data 
+                    Join FacilityView on Data.FacilityId = FacilityView.FacilityId
+                    Join MetricView on Data.MetricId = MetricView.MetricId
+                    where ${locationFieldName} = @locationId
+                    and ${dataFieldName} = @dataId
+                    and data.NewTime >= @startDate
+                    and data.NewTime <= @endDate
+                    group by MetricView.SetName`
                     break;
             }
         }
+        else{
+            query = `Select Sum(Data.Value) as Total, DatePart(year, data.newTime) from Data 
+            Join FacilityView on Data.FacilityId = FacilityView.FacilityId
+            Join MetricView on Data.MetricId = MetricView.MetricId
+            where ${locationFieldName} = @locationId
+            and ${dataFieldName} = @dataId
+            and data.NewTime >= @startDate
+            and data.NewTime <= @endDate
+            group by DatePart(year, data.NewTime)`
+        }
 
-        return sqlTextObj;
+        return query;
+    }
+
+    private getDistributionSqlTextNational(dataType: string, isDistribution: boolean, dataFieldName: string ){
+        let query = ""
+        if(isDistribution){
+            switch(dataType){
+                
+                case "set":
+                    query = `
+                    Select Sum(Data.Value) as Total, MetricView.MetricName, MetricView.RelativeOrder from Data 
+                    Join FacilityView on Data.FacilityId = FacilityView.FacilityId
+                    Join MetricView on Data.MetricId = MetricView.MetricId
+                    where ${dataFieldName} = @dataId
+                    and data.NewTime >= @startDate
+                    and data.NewTime <= @endDate
+                    group by MetricView.MetricName, MetricView.RelativeOrder`
+                    break;
+                case "group":
+                    query = `Select Sum(Data.Value) as Total, MetricView.SetName from Data 
+                    Join FacilityView on Data.FacilityId = FacilityView.FacilityId
+                    Join MetricView on Data.MetricId = MetricView.MetricId
+                    where ${dataFieldName} = @dataId
+                    and data.NewTime >= @startDate
+                    and data.NewTime <= @endDate
+                    group by MetricView.SetName`
+                    break;
+            }
+        }
+        else{
+            query = `
+            Select Sum(Data.Value) as Total, DatePart(year, data.newTime) from Data 
+            Join FacilityView on Data.FacilityId = FacilityView.FacilityId
+            Join MetricView on Data.MetricId = MetricView.MetricId
+            where ${dataFieldName} = @dataId
+            and data.NewTime >= @startDate
+            and data.NewTime <= @endDate
+            group by DatePart(year, data.NewTime)`
+        }
+
+        return query;
     }
 }
