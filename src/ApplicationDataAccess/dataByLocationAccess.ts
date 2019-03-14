@@ -134,7 +134,7 @@ export class DataByLocationAccess extends SqlDataAccess {
                     break;
                 case "group":
                     //Group by Set Name
-                    query = `Select Sum(Data.Value) as Total, MetricView.SetName as Metric, from Data 
+                    query = `Select Sum(Data.Value) as Total, MetricView.SetName as Metric from Data 
                     Join FacilityView on Data.FacilityId = FacilityView.FacilityId
                     Join MetricView on Data.MetricId = MetricView.MetricId
                     where ${locationFieldName} = @locationId
