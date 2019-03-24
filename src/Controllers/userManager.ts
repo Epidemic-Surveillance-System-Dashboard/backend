@@ -14,7 +14,7 @@ export class UserManager {
     public async getUserById(userId: number){
         var userDataAccess = new UsersDataAccess(config.get('sqlConfig'));
         var result = await userDataAccess.getUserById(userId);
-        if(result.rowsAffected > 0){
+        if(result.rowsAffected[0] > 0){
             return {"user": result.recordsets[0][0]};
         }
         else {
