@@ -121,3 +121,92 @@ describe('getUserById', () => {
     });
 
   });
+
+  describe('deleteUserById', () => {
+    var deleteUserByIdStub;
+
+    var tests = [
+        {
+            testMsg: "should return delete success when user is successfully deleted from database",
+            deleteUserById: {rowsAffected: [1]},
+            verifyFn: (result) => {chai.assert.equal(result.result, "delete success")}
+        },
+        {
+            testMsg: "should return user does not exist if user is not in the database",
+            deleteUserById: {rowsAffected: [0]},
+            verifyFn: (result) => {chai.assert.equal(result.result, "user does not exist")}
+        }
+    ];
+
+    tests.forEach((oneTest) => {
+        it(oneTest.testMsg, async () => {   
+            deleteUserByIdStub.returns(oneTest.deleteUserById); 
+            var result = await new UserManager().deleteUserById(1);
+            oneTest.verifyFn(result);
+        });
+    });
+
+    beforeEach(function() {
+        deleteUserByIdStub = sinon.stub(UsersDataAccess.prototype, "deleteUserById");
+    });
+    afterEach(function() {
+        sinon.restore();
+    });
+
+  });
+
+  describe('updateUser', () => {
+    var updateUserStub;
+    var updateUserLocationStub;
+    var getLocationNameStub;
+    var insertUserLocationStub;
+
+    var tests = [
+        {
+            testMsg: "should return user does not exist if user is not in the database",
+            updateUserValue: {rowsAffected: [0]},
+            updateUserLocationValue: {rowsAffected: [0]},
+            getLocationNameValue: "",
+            insertUserLocationValue: {rowsAffected: [0]},
+            verifyFn: (result) => {chai.assert.equal(result.result, "User does not exist")}
+        },
+        {
+            testMsg: "should return Failed to update user location if user location could not be updated",
+            updateUserValue: {rowsAffected: [1]},
+            updateUserLocationValue: {rowsAffected: [0]},
+            getLocationNameValue: "",
+            insertUserLocationValue: {rowsAffected: [0]},
+            verifyFn: (result) => {chai.assert.equal(result.result, "Failed to update user location")}
+        },
+        {
+            testMsg: "should return update successful if the user has been updated",
+            updateUserValue: {rowsAffected: [1]},
+            updateUserLocationValue: {rowsAffected: [1]},
+            getLocationNameValue: "",
+            insertUserLocationValue: {rowsAffected: [0]},
+            verifyFn: (result) => {chai.assert.equal(result.result, "Update successful")}
+        }
+    ];
+
+    tests.forEach((oneTest) => {
+        it(oneTest.testMsg, async () => {   
+            updateUserStub.returns(oneTest.updateUserValue); 
+            updateUserLocationStub.returns(oneTest.updateUserLocationValue);
+            getLocationNameStub.returns(oneTest.getLocationNameValue);
+            insertUserLocationStub.returns(oneTest.insertUserLocationValue);
+            var result = await new UserManager().updateUser(1,"","","","","",2,"");
+            oneTest.verifyFn(result);
+        });
+    });
+
+    beforeEach(function() {
+        updateUserStub = sinon.stub(UsersDataAccess.prototype, "updateUser");
+        updateUserLocationStub = sinon.stub(UserLocationDataAccess.prototype, "updateUserLocation");
+        getLocationNameStub = sinon.stub(FacilityViewDataAccess.prototype, "getLocationName");
+        insertUserLocationStub = sinon.stub(UserLocationDataAccess.prototype, "insertUserLocation");
+    });
+    afterEach(function() {
+        sinon.restore();
+    });
+
+  });

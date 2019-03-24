@@ -88,13 +88,11 @@ export class UserManager {
         var userDataResult = await userDataAccess.updateUser(userId, email, firstName, lastName, phone, userType);
         var userLocationResult = await userLocationDataAccess.updateUserLocation(userId, locationId, locationType);
         var facilityViewDataAccess = new FacilityViewDataAccess(config.get('sqlConfig'));
-
         if(userDataResult.rowsAffected[0] == 0){
             return { "result": "User does not exist" };
         }
 
         var locationName = await facilityViewDataAccess.getLocationName(locationId, locationType);
-        console.log(locationName);
 
         if(userLocationResult.rowsAffected[0] == 0){
             var result = await userLocationDataAccess.insertUserLocation(email, locationId, locationType, userId, locationName);
