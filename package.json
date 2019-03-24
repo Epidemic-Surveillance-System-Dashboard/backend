@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node ./build/server.js",
     "watch-start": "nodemon ./build/server.js",
-    "test": "mocha build/test/test.js",
+    "test": "mocha build/test",
     "tsc": "tsc"
   },
   "author": "ESSD",
