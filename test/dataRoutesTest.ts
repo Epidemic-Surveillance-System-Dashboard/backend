@@ -5,10 +5,13 @@ chai.use(require('chai-json'));
 
 const expect = chai.expect;
 const base = 'http://localhost:9000'
+
 describe('Location Hierarchy API Request', () => {
   it('Should return a json object with locations hierarchy', () => {
+    //@ts-ignore
     return chai.request(base).get('/api/locationshierarchy')
         .then(res => {
+            //@ts-ignore
             chai.expect(res.body).to.be.a.jsonObj();
             chai.expect(res.body).to.have.any.keys("State");
             chai.expect(res.body).to.have.any.keys("LGA");
@@ -18,16 +21,18 @@ describe('Location Hierarchy API Request', () => {
             chai.expect(res.body.LGA.length).to.be.above(0);
             chai.expect(res.body.Ward.length).to.be.above(0);
             chai.expect(res.body.Facility.length).to.be.above(0);
-      })
-  })
+        })
+    })
 })
 
 //http://localhost:9000/api/data/location?state=Zamfara&lga=Anka&ward=Bagega&facility=Kawaye ensary
 
 describe('Location Data API Request', () => {
     it('Should return a json object with location data', () => {
-      return chai.request(base).get('/api/data/location?state=Zamfara&lga=Anka&ward=Bagega&facility=Kawaye ensary')
+        //@ts-ignore
+        return chai.request(base).get('/api/data/location?state=Zamfara&lga=Anka&ward=Bagega&facility=Kawaye ensary')
           .then(res => {
+              //@ts-ignore
               chai.expect(res.body).to.be.a.jsonObj();
               chai.expect(res.body).to.have.any.keys("Data");
               chai.expect(res.body.Data[0]).to.have.any.keys("Id");
@@ -38,4 +43,21 @@ describe('Location Data API Request', () => {
               chai.expect(res.body.Data.length).to.be.above(0);
         })
     })
-  })
+})
+
+describe('Data Hierarchy API Request', () => {
+    it('Should return a json object with data hierarchy', () => {
+        //@ts-ignore
+        return chai.request(base).get('/api/data/hierarchy')
+          .then(res => {
+              //@ts-ignore
+              chai.expect(res.body).to.be.a.jsonObj();
+              chai.expect(res.body).to.have.any.keys("Groups");
+              chai.expect(res.body).to.have.any.keys("Sets");
+              chai.expect(res.body).to.have.any.keys("Metrics");
+              chai.expect(res.body.Groups.length).to.be.above(0);
+              chai.expect(res.body.Sets.length).to.be.above(0);
+              chai.expect(res.body.Metrics.length).to.be.above(0);
+        })
+    })
+})
