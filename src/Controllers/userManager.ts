@@ -14,7 +14,7 @@ export class UserManager {
     public async getUserById(userId: number){
         var userDataAccess = new UsersDataAccess(config.get('sqlConfig'));
         var result = await userDataAccess.getUserById(userId);
-        if(result.rowsAffected > 0){
+        if(result.rowsAffected[0] > 0){
             return {"user": result.recordsets[0][0]};
         }
         else {
@@ -88,13 +88,11 @@ export class UserManager {
         var userDataResult = await userDataAccess.updateUser(userId, email, firstName, lastName, phone, userType);
         var userLocationResult = await userLocationDataAccess.updateUserLocation(userId, locationId, locationType);
         var facilityViewDataAccess = new FacilityViewDataAccess(config.get('sqlConfig'));
-
         if(userDataResult.rowsAffected[0] == 0){
             return { "result": "User does not exist" };
         }
 
         var locationName = await facilityViewDataAccess.getLocationName(locationId, locationType);
-        console.log(locationName);
 
         if(userLocationResult.rowsAffected[0] == 0){
             var result = await userLocationDataAccess.insertUserLocation(email, locationId, locationType, userId, locationName);
@@ -105,7 +103,7 @@ export class UserManager {
         return { "result": "Update successful" };
     }
 
-    private parseChildLocationIds(rawChildLocationIds){
+    public parseChildLocationIds(rawChildLocationIds){
         var lgaIds = [];
         var wardIds = [];
         var facilityIds = [];
@@ -131,7 +129,7 @@ export class UserManager {
         };
     }
 
-    private convertUserIdsToIntArray(userIds){
+    public convertUserIdsToIntArray(userIds){
         var ids = [];
         for(var i = 0; i < userIds.length; i++){
             ids.push(parseInt(userIds[i].UserId));

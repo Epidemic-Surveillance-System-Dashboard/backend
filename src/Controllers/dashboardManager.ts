@@ -7,8 +7,8 @@ export class DashboardManager {
     constructor(){}
 
     public async getDashboardConfig(userId: number){
-        var dashbaordDataAccess = new DashboardDataAccess(config.get('sqlConfig'));
-        var dashboardConfigResult = await dashbaordDataAccess.getDashboardConfig(userId);
+        var dashboardDataAccess = new DashboardDataAccess(config.get('sqlConfig'));
+        var dashboardConfigResult = await dashboardDataAccess.getDashboardConfig(userId);
         if(dashboardConfigResult.recordsets[0].length == 0){
             return {"error": "user does not have a dashboard"};
         }
@@ -16,26 +16,26 @@ export class DashboardManager {
     }
 
     public async addDashboardConfig(email: string, userId: number, dashboardJson: string){
-        var dashbaordDataAccess = new DashboardDataAccess(config.get('sqlConfig'));
+        var dashboardDataAccess = new DashboardDataAccess(config.get('sqlConfig'));
         var usersDataAccess = new UsersDataAccess(config.get('sqlConfig'));
 
         var userResult = await usersDataAccess.getUserById(userId);
         if(userResult.recordsets[0].length == 0){
             return {"error": "user does not exist"};
         }
-        var dashboardResult = await dashbaordDataAccess.getDashboardConfig(userId);
+        var dashboardResult = await dashboardDataAccess.getDashboardConfig(userId);
         if(dashboardResult.recordsets[0].length == 0){
             return {"error": "A dashboard for this user already exists."};
         }
-        var result = await dashbaordDataAccess.insertDashboardConfig(email, dashboardJson, userId);
+        var result = await dashboardDataAccess.insertDashboardConfig(email, dashboardJson, userId);
         return result.recordsets[0][0];
     }
 
     public async updateDashboardConfig(userId: number, dashboardJson: string){
-        var dashbaordDataAccess = new DashboardDataAccess(config.get('sqlConfig'));
+        var dashboardDataAccess = new DashboardDataAccess(config.get('sqlConfig'));
         var usersDataAccess = new UsersDataAccess(config.get('sqlConfig'));
 
-        var result = await dashbaordDataAccess.updateDashboardConfig(userId, dashboardJson);
+        var result = await dashboardDataAccess.updateDashboardConfig(userId, dashboardJson);
 
         if(result.rowsAffected[0] > 0){
             return {
@@ -52,8 +52,8 @@ export class DashboardManager {
                     "result": "User does not exist"
                 };
             }
-            var insertResult = await dashbaordDataAccess.insertDashboardConfig(userResult.recordsets[0][0].Email, dashboardJson, userId);
-
+            
+            var insertResult = await dashboardDataAccess.insertDashboardConfig(userResult.recordsets[0][0].Email, dashboardJson, userId);
             if(insertResult.rowsAffected[0] > 0){
                 return {
                     "success": true,
