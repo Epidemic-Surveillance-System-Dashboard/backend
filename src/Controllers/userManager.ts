@@ -103,7 +103,7 @@ export class UserManager {
         return { "result": "Update successful" };
     }
 
-    private parseChildLocationIds(rawChildLocationIds){
+    public parseChildLocationIds(rawChildLocationIds){
         var lgaIds = [];
         var wardIds = [];
         var facilityIds = [];
@@ -129,7 +129,7 @@ export class UserManager {
         };
     }
 
-    private convertUserIdsToIntArray(userIds){
+    public convertUserIdsToIntArray(userIds){
         var ids = [];
         for(var i = 0; i < userIds.length; i++){
             ids.push(parseInt(userIds[i].UserId));

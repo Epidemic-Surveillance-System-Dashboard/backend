@@ -61,6 +61,20 @@ describe('getDashboardConfig', () => {
             insertDashboardConfigValue: {rowsAffected: [1]},
             updateDashboardConfigValue: {rowsAffected: [0]},
             verifyFn: (result) => {chai.assert.equal(result.success, false)}
+        },
+        {
+            testMsg: "should return error if user does not exist",
+            getUserIdValue: {rowsAffected: [1], recordsets: [[{Email: ""}]]},
+            insertDashboardConfigValue: {rowsAffected: [1]},
+            updateDashboardConfigValue: {rowsAffected: [0]},
+            verifyFn: (result) => {chai.assert.equal(result.success, true)}
+        },
+        {
+            testMsg: "should return error if user does not exist",
+            getUserIdValue: {rowsAffected: [1], recordsets: [[{Email: ""}]]},
+            insertDashboardConfigValue: {rowsAffected: [0]},
+            updateDashboardConfigValue: {rowsAffected: [0]},
+            verifyFn: (result) => {chai.assert.equal(result.success, false)}
         }
     ];
 

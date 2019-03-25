@@ -54,8 +54,6 @@ export class DashboardManager {
             }
             
             var insertResult = await dashboardDataAccess.insertDashboardConfig(userResult.recordsets[0][0].Email, dashboardJson, userId);
-            console.log("here")
-            console.log(insertResult)
             if(insertResult.rowsAffected[0] > 0){
                 return {
                     "success": true,

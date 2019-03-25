@@ -210,3 +210,63 @@ describe('getUserById', () => {
     });
 
   });
+
+
+  describe('parseChildLocationIds', () => {
+
+    var tests = [
+        {
+            testMsg: "should return array of child location IDs",
+            rawObject: [
+                { LGAId: 5, WardId: 5, FacilityId: 5 },
+                { LGAId: 6, WardId: 5, FacilityId: 9 },
+                { LGAId: 3, WardId: 4, FacilityId: 0 },
+                { LGAId: 1, WardId: 3, FacilityId: 6 }
+            ],
+            verifyFn: (result) => {chai.should().exist(result)}
+        }
+    ];
+
+    tests.forEach((oneTest) => {
+        it(oneTest.testMsg, async () => {   
+            var result = await new UserManager().parseChildLocationIds(oneTest.rawObject);
+            oneTest.verifyFn(result);
+        });
+    });
+
+    beforeEach(function() {
+    });
+    afterEach(function() {
+    });
+
+  });
+
+  describe('convertUserIdToIntArray', () => {
+
+    var tests = [
+        {
+            testMsg: "should return an array of ints",
+            rawObject: [
+                { UserId: 5 },
+                { UserId: 5 },
+                { UserId: 6 },
+                { UserId: 4 },
+                { UserId: 8 }
+            ],
+            verifyFn: (result) => {chai.should().exist(result)}
+        }
+    ];
+
+    tests.forEach((oneTest) => {
+        it(oneTest.testMsg, async () => {   
+            var result = await new UserManager().convertUserIdsToIntArray(oneTest.rawObject);
+            oneTest.verifyFn(result);
+        });
+    });
+
+    beforeEach(function() {
+    });
+    afterEach(function() {
+    });
+
+  });
