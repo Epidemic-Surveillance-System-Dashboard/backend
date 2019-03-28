@@ -4,16 +4,37 @@
   "description": "NodeJS Backend API for ESSD",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node ./build/server.js",
+    "watch-start": "nodemon ./build/server.js",
+    "test": "mocha build/test",
+    "code-coverage-test": "nyc --reporter=html mocha build/test",
     "tsc": "tsc"
   },
   "author": "ESSD",
   "license": "ISC",
   "dependencies": {
     "@types/node": "^10.12.18",
+    "bcryptjs": "^2.4.3",
+    "chai": "^4.2.0",
+    "chai-http": "^4.2.1",
+    "chai-json": "^1.0.0",
+    "config": "^3.0.1",
     "express": "^4.16.4",
     "gulp": "^4.0.0",
     "gulp-typescript": "^5.0.0",
-    "typescript": "^3.2.2"
+    "mocha": "^6.0.2",
+    "mssql": "^4.3.0",
+    "nyc": "^13.3.0",
+    "sinon": "^7.3.0",
+    "tedious": "^4.1.3",
+    "tedious-connection-pool": "^1.0.5",
+    "ts-node": "^8.0.3",
+    "typescript": "^3.2.2",
+    "typings": "^2.1.1",
+    "xlsx": "^0.14.1"
+  },
+  "devDependencies": {
+    "@types/chai": "^4.1.7",
+    "@types/mocha": "^5.2.6"
   }
 }
